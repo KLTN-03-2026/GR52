@@ -16,3 +16,14 @@ Phạm Tất Chinh: Lập trình Backend chức năng Đăng nhập cho nhân vi
 
 Lê Thị Thu Trinh:Lập trình Frontend trang Quản lý chức vụ.
                 Lập trình Frontend trang Quản lý phòng ban.
+
+Báo Cáo KLTN Đợt 2:
+Chi tiết công việc: 
+Võ Hoàng Phúc: chỉnh sửa phương thức đăng nhập thành phương thức đăng nhập dựa trên vai trò, xây dựng BE quản lý chấm công dành cho admin.
+
+Võ Quốc Bảo: xây dựng BE chức năng quản lý nghỉ phép
+
+Phạm Tất Chinh: xây dựng BE chấm công dành cho nhân viên.
+
+
+

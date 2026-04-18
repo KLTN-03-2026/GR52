@@ -3,21 +3,19 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\ChamCongController;
-use App\Http\Controllers\ChiTietHopDongController;
+use App\Http\Controllers\DonNghiPhepController;
 use App\Http\Controllers\ChucVuController;
-use App\Http\Controllers\KpiNhanVienController;
-use App\Http\Controllers\LoaiHopDongController;
+
 use App\Http\Controllers\NhanVienController;
 use App\Http\Controllers\PhanQuyenController;
 use App\Http\Controllers\PhongBanController;
-use App\Http\Controllers\QuyDinhChoDiemController;
-use App\Http\Controllers\ThongBaoController;
-use App\Http\Controllers\ThongKeController;
-use App\Http\Controllers\ThuongVaPhatController;
-use App\Http\Controllers\TieuChiKPIController;
+
 use App\Http\Controllers\ViTriTuyenDungController;
 use App\Http\Controllers\UngVienController;
+use App\Http\Controllers\ChamCongAdminController;
+use App\Http\Controllers\ChamCongNhanVienController;
+
+
 //đăng nhập nội bộ
 Route::get('/admin/dang-xuat', [NhanVienController::class, 'dangXuat'])->middleware("NhanVienMiddle");
 Route::get('/admin/dang-xuat-all', [NhanVienController::class, 'dangXuatAll'])->middleware("NhanVienMiddle");
@@ -25,6 +23,7 @@ Route::post('/admin/dang-nhap', [NhanVienController::class, 'login']);
 Route::post('/admin/dang-ky', [NhanVienController::class, 'SignIn']);
 Route::get('/admin/nhan-vien/data', [NhanVienController::class, 'getData'])->middleware("NhanVienMiddle");
 Route::get('/admin/check-login', [NhanVienController::class, 'checkLogin']);
+Route::get('/admin/logout', [NhanVienController::class, 'logout'])->middleware("NhanVienMiddle");
 
 //nhân viên
 Route::post('/admin/nhan-vien/tim-kiem', [NhanVienController::class, 'timKiemNhanVien'])->middleware("NhanVienMiddle");
@@ -73,4 +72,29 @@ Route::post('/ung-vien/dang-xuat', [UngVienController::class, 'dangXuat']);
 Route::post('/ung-vien/update', [UngVienController::class, 'update'])->middleware("auth:ung_vien");
 Route::post('/ung-vien/dang-ky', [UngVienController::class, 'dangKy']);
 
+//chấm công nhân viên
+Route::get('/nhan-vien/cham-cong/hom-nay',   [ChamCongNhanVienController::class, 'homNay'])->middleware("auth:sanctum");
+Route::get('/nhan-vien/cham-cong/lich-su',   [ChamCongNhanVienController::class, 'lichSu'])->middleware("auth:sanctum");
+Route::post('/nhan-vien/cham-cong/check-in', [ChamCongNhanVienController::class, 'checkIn'])->middleware("auth:sanctum");
+Route::post('/nhan-vien/cham-cong/check-out', [ChamCongNhanVienController::class, 'checkOut'])->middleware("auth:sanctum");
 
+//chấm công admin
+Route::get('admin/cham-cong/data',                [ChamCongAdminController::class, 'getData'])->middleware("NhanVienMiddle");
+Route::get('admin/cham-cong/xem-anh/{id}',        [ChamCongAdminController::class, 'xemAnh'])->middleware("NhanVienMiddle");
+Route::post('admin/cham-cong/xac-nhan',           [ChamCongAdminController::class, 'xacNhan'])->middleware("NhanVienMiddle");
+Route::post('admin/cham-cong/nghi-ngo',           [ChamCongAdminController::class, 'danhDauNghiNgo'])->middleware("NhanVienMiddle");
+Route::post('admin/cham-cong/xac-nhan-hang-loat', [ChamCongAdminController::class, 'xacNhanHangLoat'])->middleware("NhanVienMiddle");
+Route::get('admin/cham-cong/thong-ke',            [ChamCongAdminController::class, 'thongKe'])->middleware("NhanVienMiddle");
+
+//nghỉ phép nhân viên
+Route::get('/nhan-vien/nghi-phep/danh-sach',   [DonNghiPhepController::class, 'danhSachNhanVien'])->middleware("auth:sanctum");;
+Route::get('/nhan-vien/nghi-phep/thong-ke',    [DonNghiPhepController::class, 'thongKeNhanVien'])->middleware("auth:sanctum");
+Route::post('/nhan-vien/nghi-phep/nop-don',    [DonNghiPhepController::class, 'nopDon'])->middleware("auth:sanctum");
+Route::post('/nhan-vien/nghi-phep/huy-don',    [DonNghiPhepController::class, 'huyDon'])->middleware("auth:sanctum");
+
+//nghỉ phép admin
+Route::get('/admin/don-nghi-phep/data',        [DonNghiPhepController::class, 'getData'])->middleware("NhanVienMiddle");
+Route::post('/admin/don-nghi-phep/duyet',      [DonNghiPhepController::class, 'duyet'])->middleware("NhanVienMiddle");
+Route::post('/admin/don-nghi-phep/tu-choi',    [DonNghiPhepController::class, 'tuChoi'])->middleware("NhanVienMiddle");
+Route::post('/admin/don-nghi-phep/delete',     [DonNghiPhepController::class, 'delete'])->middleware("NhanVienMiddle");
+Route::get('/admin/don-nghi-phep/xuat-excel',  [DonNghiPhepController::class, 'xuatExcel'])->middleware("NhanVienMiddle");

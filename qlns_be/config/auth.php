@@ -41,7 +41,7 @@ return [
             'provider' => 'users',
         ],
         'nhanvien' => [
-            'driver'    => 'session',
+            'driver'    => 'sanctum',
             'provider'  => 'nhanvien',
         ],
         'ung_vien' => [
@@ -81,10 +81,10 @@ return [
             'driver'    => 'eloquent',
             'model'     => \App\Models\UngVien::class,
         ],
-        // 'tai_khoan_ung_viens' => [
-        //     'driver' => 'eloquent',
-        //     'model' => \App\Models\TaiKhoanUngVien::class,
-        // ],
+        'tai_khoan_ung_viens' => [
+            'driver' => 'eloquent',
+            'model' => \App\Models\UngVien::class,
+        ],
 
         // 'users' => [
         //     'driver' => 'database',

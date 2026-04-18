@@ -13,30 +13,29 @@ class NhanVienController extends Controller
 {
     public function login(Request $request)
     {
-
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
-        $check = Auth::guard('nhanvien')->attempt([
-            'email'    => $request->email,
-            'password' => $request->password
-        ]);
+        $nhanVien = \App\Models\NhanVien::with(['chucVu'])->where('email', $request->email)->first();
 
-        if ($check) {
-            $nhanVien = Auth::guard('nhanvien')->user();
+        if (!$nhanVien || !Hash::check($request->password, $nhanVien->password)) {
             return response()->json([
-                'status'  => true,
-                'message' => "Đã đăng nhập thành công!",
-                'token'   => $nhanVien->createToken('token_nhan_vien')->plainTextToken,
-            ]);
+                'status' => false,
+                'message' => 'Sai email hoặc mật khẩu'
+            ], 401);
         }
+        $nhanVien->tokens()->delete();
+
+        $token = $nhanVien->createToken('nhan_vien_token')->plainTextToken;
 
         return response()->json([
-            'status'  => false,
-            'message' => 'Email hoặc mật khẩu không đúng'
-        ], 401);
+            'status' => true,
+            'token' => $token,
+            'user' => $nhanVien,
+            'role' => $nhanVien->role, // Trả về role để frontend xác định layout
+        ]);
     }
 
     public function exportExcel(Request $request)
@@ -168,7 +167,9 @@ class NhanVienController extends Controller
         $user_login   = Auth::guard('sanctum')->user();
         if ($user_login && $user_login instanceof \App\Models\NhanVien) {
             return response()->json([
-                'status'    =>  true
+                'status'    =>  true,
+                'user'      =>  $user_login,
+                'role'      =>  $user_login->role
             ]);
         } else {
             return response()->json([
@@ -188,5 +189,23 @@ class NhanVienController extends Controller
         $phongBan = NhanVien::findOrFail($validated['id']);
         $phongBan->update(['tinh_trang' => $validated['tinh_trang']]);
         return response()->json($phongBan);
+    }
+
+    public function logout(Request $request)
+    {
+        $user = $request->user('sanctum');
+
+        if ($user) {
+            // Delete current token
+            $token = $user->currentAccessToken();
+            if ($token) {
+                $token->delete();
+            }
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Đã đăng xuất'
+        ]);
     }
 }

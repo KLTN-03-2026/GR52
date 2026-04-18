@@ -17,6 +17,7 @@ class NhanVien extends Authenticatable
         'ho_va_ten',
         'email',
         'password',
+        'role',
         'ngay_sinh',
         'dia_chi',
         'so_dien_thoai',
