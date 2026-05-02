@@ -38,7 +38,10 @@ import "../../assets/css/bootstrap.min.css";
 import "../../assets/css/bootstrap-extended.css";
 import "../../assets/css/app.css";
 import "../../assets/css/icons.css";
+<<<<<<< HEAD
 import "../../assets/css/design-system.css";
+=======
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
 
 export default {
     name: "app",
@@ -50,4 +53,8 @@ export default {
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");
+<<<<<<< HEAD
 </style>
+=======
+</style>
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe

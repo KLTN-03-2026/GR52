@@ -1,13 +1,24 @@
 <template>
+<<<<<<< HEAD
     <div :class="['wrapper', isSidebarOpen ? 'sidebar-open' : 'sidebar-mini']">
         <!--sidebar wrapper -->
         <div class="sidebar-wrapper" data-simplebar="true">
             <MenuRocker ref="sidebarMenu" @sidebar-change="onSidebarChange"></MenuRocker>
+=======
+    <div class="wrapper">
+        <!--sidebar wrapper -->
+        <div class="sidebar-wrapper" data-simplebar="true">
+            <MenuRocker @sidebar-change="onSidebarChange"></MenuRocker>
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
         </div>
         <!--end sidebar wrapper -->
         <!--start header -->
         <header>
+<<<<<<< HEAD
             <TopRocker @toggle-sidebar="toggleSidebar"></TopRocker>
+=======
+            <TopRocker></TopRocker>
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
         </header>
         <!--end header -->
         <!--start page wrapper -->
@@ -43,12 +54,16 @@ import "../../assets/css/bootstrap.min.css";
 import "../../assets/css/bootstrap-extended.css";
 import "../../assets/css/app.css";
 import "../../assets/css/icons.css";
+<<<<<<< HEAD
 import "../../assets/css/design-system.css";
+=======
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
 
 export default {
     name: "app",
     components: {
         TopRocker, MenuRocker, BotRocker
+<<<<<<< HEAD
     },
     data() {
         return {
@@ -66,10 +81,16 @@ export default {
         toggleSidebar() {
             this.$refs.sidebarMenu?.toggleSidebar();
         }
+=======
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
     }
 }
 </script>
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");
+<<<<<<< HEAD
 </style>
+=======
+</style>
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe

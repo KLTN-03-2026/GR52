@@ -39,9 +39,15 @@
 
                                         <div class="col-12">
                                             <div class="d-grid">
+<<<<<<< HEAD
                                                 <button v-on:click="login()" type="button" class="btn btn-primary"
                                                     :disabled="isLoading"><i class="fa-solid fa-lock-open"></i>{{
                                                     isLoading ? 'Đang xử lý...' : 'Đăng Nhập' }}</button>
+=======
+                                                <button v-on:click="login()" type="button" class="btn btn-primary"><i
+                                                        class="fa-solid fa-lock-open"></i>Đăng
+                                                    Nhập</button>
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                                             </div>
                                         </div>
                                     </div>
@@ -56,12 +62,16 @@
 </template>
 <script>
 import axios from 'axios';
+<<<<<<< HEAD
 import authService from '../../../services/authService';
 
+=======
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
 export default {
     data() {
         return {
             tk: { 'email': '', 'password': '' },
+<<<<<<< HEAD
             isLoading: false
         }
     },
@@ -81,10 +91,22 @@ export default {
 
             this.isLoading = true;
 
+=======
+
+        }
+    },
+    mounted() {
+
+    },
+    methods: {
+
+        login() {
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
             axios
                 .post("http://127.0.0.1:8000/api/admin/dang-nhap", this.tk)
                 .then((res) => {
                     if (res.data.status) {
+<<<<<<< HEAD
                         // Lưu token
                         localStorage.setItem('tk_nhan_vien', res.data.token);
 
@@ -102,6 +124,16 @@ export default {
 
                         this.$nextTick(() => {
                             this.$router.push(dashboardUrl);
+=======
+                        
+                        localStorage.setItem('tk_nhan_vien', res.data.token);
+                        axios.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;
+
+                        this.$toast.success(res.data.message);
+                        
+                        this.$nextTick(() => {
+                            this.$router.push('/admin/nhan-vien');
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                         });
                     } else {
                         this.$toast.error(res.data.message);
@@ -110,11 +142,18 @@ export default {
                 .catch(err => {
                     const msg = err?.response?.data?.message || 'Email hoặc mật khẩu không chính xác.';
                     this.$toast.error(msg);
+<<<<<<< HEAD
                 })
                 .finally(() => {
                     this.isLoading = false;
                 });
         },
+=======
+                });
+        },
+
+
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
     }
 }
 </script>

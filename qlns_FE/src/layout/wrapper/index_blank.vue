@@ -29,6 +29,11 @@ export default {
 @import "../../assets/css/dark-theme.css";
 @import "../../assets/css/semi-dark.css";
 @import "../../assets/css/header-colors.css";
+<<<<<<< HEAD
 @import "../../assets/css/design-system.css";
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");
 </style>
+=======
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");
+</style>
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe

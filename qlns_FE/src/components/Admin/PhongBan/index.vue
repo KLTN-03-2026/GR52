@@ -1,7 +1,11 @@
 <template>
     <div class="row">
         <div class="col-lg-4">
+<<<<<<< HEAD
             <div class='card border-top border-4 border-primary'>
+=======
+            <div class='card border-top border-0 border-4 border-primary'>
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                 <div class='card-header'>
                     <h5>Thêm Mới Phòng Ban</h5>
                 </div>
@@ -25,10 +29,17 @@
                             <label class="mb-2">Trưởng Phòng</label>
                             <select v-model="create_phong_ban.id_truong_phong" class="form-select">
                                 <option value="">-- Chọn Trưởng Phòng --</option>
+<<<<<<< HEAD
                                 <option v-for="(nv, nk) in list_nhan_vien" :key="nv.id || nk" :value="nv.id">
                                     {{ nv.ho_va_ten || nv.hoTen || (nv.ho && nv.ten ? nv.ho + ' ' + nv.ten : (nv.email
                                         || 'NV #' + nv.id)) }}
                                 </option>
+=======
+                                <template v-for="(nv, nk) in list_nhan_vien" :key="nv.id || nk">
+                                    <option :value="nv.id">{{ nv.ho_va_ten || nv.hoTen || (nv.ho && nv.ten ? nv.ho + ' '
+                                        + nv.ten : (nv.email || 'NV #' + nv.id)) }}</option>
+                                </template>
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                             </select>
                             <div v-if="!list_nhan_vien || !list_nhan_vien.length" class="form-text text-muted">Không có
                                 nhân viên để chọn</div>
@@ -49,7 +60,11 @@
             </div>
         </div>
         <div class="col-lg-8">
+<<<<<<< HEAD
             <div class='card border-top border-4 border-primary'>
+=======
+            <div class='card border-top border-0 border-4 border-primary'>
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                 <div class='card-header d-flex justify-content-between align-items-center'>
                     <h5>Danh Sách Phòng Ban</h5>
                     <button @click="xuatExcel()" type="button" class="btn btn-success me-2">
@@ -69,6 +84,7 @@
                             </tr>
                         </thead>
                         <tbody>
+<<<<<<< HEAD
                             <tr v-for="(v, k) in list_phong_ban" :key="v.id || k" class='align-middle text-center'>
                                 <th class='align-middle'>{{ k + 1 }}</th>
                                 <td class='align-middle'>{{ v.ten_phong_ban }}</td>
@@ -92,6 +108,33 @@
                                         @click="setDeletePhongBan(v)" class="btn btn-danger">Xóa</button>
                                 </td>
                             </tr>
+=======
+                            <template v-for="(v, k) in list_phong_ban" :key="v.id || k">
+                                <tr class='align-middle text-center'>
+                                    <th class='align-middle'>{{ k + 1 }}</th>
+                                    <td class='align-middle'>{{ v.ten_phong_ban }}</td>
+                                    <td>{{ getTenPhongBanCha(v.id_phong_ban_cha) }}</td>
+                                    <td>{{ getTenTruongPhong(v.id_truong_phong) }}</td>
+                                    <td class="align-middle text-nowrap text-center">
+                                        <template v-if="v.tinh_trang == 1">
+                                            <button v-on:click="changeStatus(v)" class="btn btn-success w-100">Hiển
+                                                Thị</button>
+                                        </template>
+                                        <template v-else>
+                                            <button v-on:click="changeStatus(v)" class="btn btn-danger w-100">Tạm
+                                                Tắt</button>
+                                        </template>
+                                    </td>
+                                    <td class='align-middle'>
+                                        <button type="button" class="btn btn-primary me-2" data-bs-toggle='modal'
+                                            @click="editPhongBan(v)" data-bs-target='#edit'>Cập
+                                            Nhật</button>
+                                        <button type="button" data-bs-toggle='modal' data-bs-target='#xoa'
+                                            @click="setDeletePhongBan(v)" class="btn btn-danger">Xóa</button>
+                                    </td>
+                                </tr>
+                            </template>
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
 
                         </tbody>
                     </table>
@@ -123,10 +166,17 @@
                                     <label class="mb-2">Trưởng Phòng</label>
                                     <select v-model="edit_phong_ban.id_truong_phong" class="form-select">
                                         <option value="">-- Chọn Trưởng Phòng --</option>
+<<<<<<< HEAD
                                         <option v-for="(nv, nk) in list_nhan_vien" :key="nv.id || nk" :value="nv.id">
                                             {{ nv.ho_va_ten || nv.hoTen || (nv.ho && nv.ten ? nv.ho + ' ' + nv.ten :
                                                 (nv.email || 'NV #' + nv.id)) }}
                                         </option>
+=======
+                                        <template v-for="(nv, nk) in list_nhan_vien" :key="nv.id || nk">
+                                            <option :value="nv.id">{{ nv.ho_va_ten || nv.hoTen || (nv.ho && nv.ten ?
+                                                nv.ho + ' ' + nv.ten : (nv.email || 'NV #' + nv.id)) }}</option>
+                                        </template>
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                                     </select>
                                     <div v-if="!list_nhan_vien || !list_nhan_vien.length" class="form-text text-muted">
                                         Không có

@@ -24,8 +24,13 @@
                         <button v-on:click="TimKiemBE()" class="btn btn-outline-secondary" type="button"
                             id="search-button">Tìm
                             Kiếm</button>
+<<<<<<< HEAD
 
 
+=======
+                          
+                            
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                     </div>
 
                     <div class="row g-3">
@@ -53,10 +58,13 @@
                                             <button class="btn btn-info me-2" data-bs-toggle="modal"
                                                 data-bs-target="#hopDongModal"
                                                 v-on:click="Object.assign(create_hop_dong, v)">Tạo Hợp Đồng</button>
+<<<<<<< HEAD
                                             <!-- <button class="btn btn-primary me-2 width-1"  @click="changeStatus(v)"
                                                 :class="v.tinh_trang == 1 ? 'btn btn-success w-100' : 'btn btn-danger w-100'">
                                                 {{ v.tinh_trang == 1 ? 'Hiển Thị' : 'Tạm Tắt' }}
                                             </button> -->
+=======
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                                             <button class="btn btn-primary me-2" data-bs-toggle="modal"
                                                 data-bs-target="#capnhatDM"
                                                 v-on:click="Object.assign(edit_nhan_vien, v)">Cập nhật</button>
@@ -180,7 +188,11 @@
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
+<<<<<<< HEAD
                         <h1 class="modal-title fs-5" id="exampleModalLabel">Phân Quyền Đăng Nhập Cho Nhân Viên: {{
+=======
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Phân Quyền Cho Nhân Viên {{
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                             phan_quyen_nhan_vien.ho_va_ten }}</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -189,7 +201,11 @@
                             <thead>
                                 <tr>
                                     <th class='align-middle text-center'>#</th>
+<<<<<<< HEAD
                                     <th class='align-middle text-center'>Quyền</th>
+=======
+                                    <th class='align-middle text-center'>Tên Chức Năng</th>
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                                     <th class='align-middle text-center'>Trạng Thái</th>
                                 </tr>
                             </thead>
@@ -204,9 +220,16 @@
                                         </td>
                                         <td class="text-center align-middle">
                                             <button v-if="v.is_phan_quyen == 1" v-on:click="removeQuyen(v)"
+<<<<<<< HEAD
                                                 class="btn btn-primary">Đang dùng</button>
                                             <button v-else v-on:click="setQuyen(v)" class="btn btn-outline-primary">Cấp
                                                 quyền này</button>
+=======
+                                                class="btn btn-primary">Đã Phân
+                                                Quyền</button>
+                                            <button v-else v-on:click="setQuyen(v)" class="btn btn-danger">Chưa Phân
+                                                Quyền</button>
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                                         </td>
                                     </tr>
                                 </template>
@@ -359,7 +382,10 @@ export default {
             list_chuc_nang: [],
 
             search: { noi_dung: '', id_chuc_vu: null, id_phong_ban: null },
+<<<<<<< HEAD
             status_loading: {},
+=======
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
 
             editor: ClassicEditor,
             editorConfig: {
@@ -546,15 +572,23 @@ export default {
                 })
                 .then((res) => {
                     if (res.data.status) {
+<<<<<<< HEAD
                         this.$toast.success(res.data.message || 'Cấp quyền thành công');
                         this.loadChucNang(this.phan_quyen_nhan_vien);
                     } else {
                         this.$toast.error(res.data.message || 'Cấp quyền thất bại');
+=======
+                        this.$toast.success('Cấp quyền thành công');
+                        this.loadChucNang(this.phan_quyen_nhan_vien);
+                    } else {
+                        this.$toast.error('Cấp quyền thất bại');
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                     }
                 })
                 .catch((err) => this.handleValidationError(err));
         },
 
+<<<<<<< HEAD
         // ─── ĐỔI TRẠNG THÁI NHÂN VIÊN ─────────────────────
         changeNhanVienStatus(nhanVien, event) {
             const newStatus = event.target.value;
@@ -582,6 +616,8 @@ export default {
                 });
         },
 
+=======
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
         // ─── THU HỒI QUYỀN ─────────────────────────────────
         removeQuyen(value) {
             axios
@@ -593,10 +629,17 @@ export default {
                 })
                 .then((res) => {
                     if (res.data.status) {
+<<<<<<< HEAD
                         this.$toast.success(res.data.message || 'Thu hồi quyền thành công');
                         this.loadChucNang(this.phan_quyen_nhan_vien);
                     } else {
                         this.$toast.error(res.data.message || 'Thu hồi quyền thất bại');
+=======
+                        this.$toast.success('Thu hồi quyền thành công');
+                        this.loadChucNang(this.phan_quyen_nhan_vien);
+                    } else {
+                        this.$toast.error('Thu hồi quyền thất bại');
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                     }
                 })
                 .catch((err) => this.handleValidationError(err));
@@ -623,6 +666,7 @@ export default {
         },
 
 
+<<<<<<< HEAD
         //─── HỢP ĐỒNG: TỰ ĐIỀN NỘI DUNG KHI CHỌN LOẠI ─────────────────
         loadNoiDung() {
             const found = this.list_hop_dong.find(
@@ -651,6 +695,36 @@ export default {
                     this.handleValidationError(err);
                 });
         },
+=======
+        // ─── HỢP ĐỒNG: TỰ ĐIỀN NỘI DUNG KHI CHỌN LOẠI ─────────────────
+        // loadNoiDung() {
+        //     const found = this.list_hop_dong.find(
+        //         (v) => v.id == this.create_hop_dong.id_loai_hop_dong
+        //     );
+        //     if (found) {
+        //         this.create_hop_dong.noi_dung = found.noi_dung;
+        //     }
+        // },
+
+        // // ─── HỢP ĐỒNG: TẠO HỢP ĐỒNG ────────────────────────────────────
+        // taoHopDong() {
+        //     axios
+        //         .post(`${API}/chi-tiet-hop-dong/create`, this.create_hop_dong, {
+        //             headers: this.authHeader(),
+        //         })
+        //         .then((res) => {
+        //             if (res.status === 200 || res.status === 201) {
+        //                 this.$toast.success('Tạo hợp đồng thành công.');
+        //                 this.create_hop_dong = {};
+        //             } else {
+        //                 this.$toast.error('Tạo hợp đồng thất bại.');
+        //             }
+        //         })
+        //         .catch((err) => {
+        //             this.handleValidationError(err);
+        //         });
+        // },
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
 
         xuatExcel() {
             axios

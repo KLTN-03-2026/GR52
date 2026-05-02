@@ -62,6 +62,7 @@ export default {
                 if (res.data.status) {
                     this.$toast.success("Đăng nhập thành công 🎉");
 
+<<<<<<< HEAD
                     // Lưu token ứng viên
                     localStorage.setItem('token_ung_vien', res.data.token);
                     
@@ -72,6 +73,13 @@ export default {
 
                     // Redirect sang trang chủ ứng viên
                     this.$router.push('/ung-vien/trang-chu');
+=======
+                    
+                    localStorage.setItem('token_ung_vien', res.data.token);
+
+                    
+                    this.$router.push('/');
+>>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
 
                 } else {
                     this.$toast.error(res.data.message || "Sai tài khoản hoặc mật khẩu");
