@@ -15,7 +15,10 @@ class NhanVienMiddle
         if($tai_khoan_dang_dang_nhap && $tai_khoan_dang_dang_nhap instanceof \App\Models\NhanVien) {
             return $next($request);
         } else {
-            return response()->json("Không có quyền thực hiện chức năng này!");
+            return response()->json([
+                'status' => false,
+                'message' => 'Bạn cần đăng nhập vào hệ thống trước.',
+            ], 401);
         }
     }
 }

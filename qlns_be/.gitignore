@@ -19,3 +19,33 @@ yarn-error.log
 /.idea
 /.vscode
 /.zed
+
+.env
+.env.*
+qlns_be/.env.cv-analysis
+
+# Setup files có thể chứa key
+qlns_be/setup-cv-analysis.php
+
+# Node / Vue
+node_modules/
+dist/
+
+# Laravel
+vendor/
+storage/*.key.env
+.env.*
+qlns_be/.env.cv-analysis
+
+# Setup files có thể chứa key
+qlns_be/setup-cv-analysis.php
+
+# Node / Vue
+node_modules/
+dist/
+
+# Laravel
+vendor/
+storage/*.key
+
+.env.cv-analysis

@@ -18,7 +18,7 @@ class UngVienSeeder extends Seeder
             ['ho_ten' => 'Nguyễn Thị Mai',   'email' => 'mai.nguyen@gmail.com',    'so_dien_thoai' => '0912001001', 'tinh_trang' => 1, 'ghi_chu' => 'Ứng viên tiềm năng cho vị trí Frontend'],
             ['ho_ten' => 'Trần Văn Hùng',    'email' => 'hung.tran@gmail.com',     'so_dien_thoai' => '0912001002', 'tinh_trang' => 1, 'ghi_chu' => null],
             ['ho_ten' => 'Lê Thị Phương',    'email' => 'phuong.le@yahoo.com',     'so_dien_thoai' => '0912001003', 'tinh_trang' => 1, 'ghi_chu' => 'Có kinh nghiệm 3 năm Marketing'],
-            ['ho_ten' => 'Phạm Minh Tuấn',   'email' => 'tuan.pham@outlook.com',   'so_dien_thoai' => '0912001004', 'tinh_trang' => 1, 'ghi_chu' => null],
+            ['ho_ten' => 'Phạm Minh Tuấn',   'email' => 'tuan.pham@outlook.com',   'o_dien_thoai' => '0912001004', 'tinh_trang' => 1, 'ghi_chu' => null],
             ['ho_ten' => 'Võ Thị Lan',       'email' => 'lan.vo@gmail.com',        'so_dien_thoai' => '0912001005', 'tinh_trang' => 1, 'ghi_chu' => 'Kế toán 5 năm kinh nghiệm'],
             ['ho_ten' => 'Đặng Quốc Bảo',    'email' => 'bao.dang@gmail.com',      'so_dien_thoai' => '0912001006', 'tinh_trang' => 1, 'ghi_chu' => null],
             ['ho_ten' => 'Bùi Thị Ngọc',     'email' => 'ngoc.bui@gmail.com',      'so_dien_thoai' => '0912001007', 'tinh_trang' => 0, 'ghi_chu' => 'Đã trúng tuyển — chuyển thành nhân viên'],

@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('thuong_va_phats', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_nhan_vien');
-            $table->unsignedBigInteger('id_nhan_vien_cho_diem');
-            $table->unsignedBigInteger('id_quy_dinh');
-            $table->double('diem');
-            $table->string('ly_do', 255)->nullable();
-            $table->dateTime('ngay')->nullable();
+            $table->tinyInteger('thang');
+            $table->smallInteger('nam');
+            $table->enum('loai', ['thuong', 'phat']);
+            $table->decimal('so_tien', 15, 0)->comment('VNĐ, luôn dương — loai quyết định +/-');
+            $table->string('ly_do', 500)->nullable();
+            $table->unsignedBigInteger('id_nguoi_tao')->nullable();
             $table->timestamps();
-
-
+            $table->foreign('id_nhan_vien')->references('id')->on('nhan_viens')->cascadeOnDelete();
         });
     }
 

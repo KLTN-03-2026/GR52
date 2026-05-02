@@ -8,6 +8,10 @@ use Carbon\Carbon;
 
 class DonNghiPhepController extends Controller
 {
+    private const PHEP_NAM_MOI_NAM = 12;
+    private const NGHI_OM_MOI_NAM = 5;
+    private const LOAI_NGHI_HOP_LE = ['phep_nam', 'om'];
+
     public function danhSachNhanVien(Request $request)
     {
         $nhanVien = $request->user();
@@ -32,23 +36,24 @@ class DonNghiPhepController extends Controller
         $nam      = now()->year;
 
         $dons = DonNghiPhep::where('id_nhan_vien', $nhanVien->id)
-            ->whereYear('created_at', $nam)
+            ->whereYear('ngay_bat_dau', $nam)
             ->get();
 
-        // Số ngày phép năm còn lại (giả sử mỗi năm được 12 ngày)
-        $tongPhepNam   = 12;
-        $daSDungPhep   = $dons->where('loai_nghi', 'phep_nam')
-            ->where('trang_thai', 2)
-            ->sum('so_ngay');
-        $phepConLai    = max(0, $tongPhepNam - $daSDungPhep);
+        $phepNam = $this->tinhHanMucConLai($nhanVien->id, 'phep_nam', $nam);
+        $nghiOm  = $this->tinhHanMucConLai($nhanVien->id, 'om', $nam);
 
         return response()->json([
             'status' => true,
             'data'   => [
-                'tong_don'     => $dons->count(),
-                'cho_duyet'    => $dons->where('trang_thai', 1)->count(),
-                'da_duyet'     => $dons->where('trang_thai', 2)->count(),
-                'phep_con_lai' => $phepConLai,
+                'tong_don'           => $dons->count(),
+                'cho_duyet'          => $dons->where('trang_thai', 1)->count(),
+                'da_duyet'           => $dons->where('trang_thai', 2)->count(),
+                'phep_con_lai'       => $phepNam['con_lai'],
+                'tong_phep_nam'      => $phepNam['tong_han_muc'],
+                'phep_nam_da_dung'   => $phepNam['da_dung'],
+                'nghi_om_con_lai'    => $nghiOm['con_lai'],
+                'tong_nghi_om'       => $nghiOm['tong_han_muc'],
+                'nghi_om_da_dung'    => $nghiOm['da_dung'],
             ],
         ]);
     }
@@ -57,7 +62,7 @@ class DonNghiPhepController extends Controller
     public function nopDon(Request $request)
     {
         $validated = $request->validate([
-            'loai_nghi'      => 'required|in:phep_nam,om,khong_luong,viec_rieng',
+            'loai_nghi'      => 'required|in:phep_nam,om',
             'ngay_bat_dau'   => 'required|date|after_or_equal:today',
             'ngay_ket_thuc'  => 'required|date|after_or_equal:ngay_bat_dau',
             'ly_do'          => 'required|string|max:500',
@@ -75,8 +80,8 @@ class DonNghiPhepController extends Controller
         $trung = DonNghiPhep::where('id_nhan_vien', $nhanVien->id)
             ->whereIn('trang_thai', [1, 2])
             ->where(function ($q) use ($validated) {
-                $q->whereBetween('ngay_bat_dau', [$validated['ngay_bat_dau'], $validated['ngay_ket_thuc']])
-                    ->orWhereBetween('ngay_ket_thuc', [$validated['ngay_bat_dau'], $validated['ngay_ket_thuc']]);
+                $q->where('ngay_bat_dau', '<=', $validated['ngay_ket_thuc'])
+                    ->where('ngay_ket_thuc', '>=', $validated['ngay_bat_dau']);
             })->exists();
 
         if ($trung) {
@@ -86,15 +91,7 @@ class DonNghiPhepController extends Controller
             ]);
         }
 
-        // Tính số ngày làm việc (không tính T7, CN)
-        $start   = Carbon::parse($validated['ngay_bat_dau']);
-        $end     = Carbon::parse($validated['ngay_ket_thuc']);
-        $soNgay  = 0;
-        $current = $start->copy();
-        while ($current->lte($end)) {
-            if (!$current->isWeekend()) $soNgay++;
-            $current->addDay();
-        }
+        $soNgay = $this->tinhSoNgayLamViec($validated['ngay_bat_dau'], $validated['ngay_ket_thuc']);
 
         $don = DonNghiPhep::create([
             'id_nhan_vien'   => $nhanVien->id,
@@ -107,9 +104,14 @@ class DonNghiPhepController extends Controller
             'trang_thai'     => 1,
         ]);
 
+        $hanMuc = $this->tinhHanMucConLai($nhanVien->id, $validated['loai_nghi'], Carbon::parse($validated['ngay_bat_dau'])->year);
+        $messageThem = $soNgay > $hanMuc['con_lai']
+            ? ' Phần vượt hạn mức sẽ bị trừ lương nếu được duyệt.'
+            : '';
+
         return response()->json([
             'status'  => true,
-            'message' => "Đã gửi đơn xin nghỉ {$soNgay} ngày. Vui lòng chờ phê duyệt.",
+            'message' => "Đã gửi đơn xin nghỉ {$soNgay} ngày. Vui lòng chờ phê duyệt.{$messageThem}",
             'data'    => $don,
         ], 201);
     }
@@ -150,10 +152,7 @@ class DonNghiPhepController extends Controller
         $validated = $request->validate([
             'id'              => 'required|exists:don_nghi_pheps,id',
             'id_nguoi_duyet'  => 'required|exists:nhan_viens,id',
-            //'loai_tinh_luong' => 'required|in:co_luong,khong_luong,om',
             'ghi_chu_duyet'   => 'nullable|string|max:500',
-        ], [
-            //'loai_tinh_luong.required' => 'Vui lòng chọn loại tính lương.',
         ]);
 
         $don = DonNghiPhep::findOrFail($validated['id']);
@@ -162,26 +161,20 @@ class DonNghiPhepController extends Controller
             return response()->json(['status' => false, 'message' => 'Đơn này đã được xử lý rồi.']);
         }
 
+        $tachNgayLuong = $this->tinhNgayLuongChoDon($don);
+
         $don->update([
             'trang_thai'      => 2,
             'id_nguoi_duyet'  => $validated['id_nguoi_duyet'],
             'ngay_duyet'      => now(),
-            //'loai_tinh_luong' => $validated['loai_tinh_luong'],
+            'so_ngay_co_luong' => $tachNgayLuong['co_luong'],
+            'so_ngay_khong_luong' => $tachNgayLuong['khong_luong'],
             'ghi_chu_duyet'   => $validated['ghi_chu_duyet'] ?? null,
         ]);
 
-        // TODO: Trigger tính lương — ghi vào bảng luong_chi_tiet nếu có
-        // LuongChiTiet::create([
-        //     'id_nhan_vien'   => $don->id_nhan_vien,
-        //     'thang'          => $don->ngay_bat_dau->month,
-        //     'nam'            => $don->ngay_bat_dau->year,
-        //     'ngay_nghi'      => $don->so_ngay,
-        //     'loai_tinh_luong'=> $validated['loai_tinh_luong'],
-        // ]);
-
         return response()->json([
             'status'  => true,
-            'message' => 'Phê duyệt đơn nghỉ phép thành công. Đã ghi nhận vào hệ thống lương.',
+            'message' => "Phê duyệt thành công. Có lương {$tachNgayLuong['co_luong']} ngày, trừ lương {$tachNgayLuong['khong_luong']} ngày.",
             'data'    => $don->load(['nhanVien:id,ho_va_ten', 'nguoiDuyet:id,ho_va_ten']),
         ]);
     }
@@ -192,6 +185,7 @@ class DonNghiPhepController extends Controller
         $validated = $request->validate([
             'id'              => 'required|exists:don_nghi_pheps,id',
             'id_nguoi_duyet'  => 'required|exists:nhan_viens,id',
+            'ly_do_tu_choi'   => 'required|string|max:500',
             'ghi_chu_duyet'   => 'nullable|string|max:500',
         ]);
 
@@ -205,6 +199,7 @@ class DonNghiPhepController extends Controller
             'trang_thai'      => 3,
             'id_nguoi_duyet'  => $validated['id_nguoi_duyet'],
             'ngay_duyet'      => now(),
+            'ly_do_tu_choi'   => $validated['ly_do_tu_choi'],
             'ghi_chu_duyet'   => $validated['ghi_chu_duyet'] ?? null,
         ]);
 
@@ -267,11 +262,11 @@ class DonNghiPhepController extends Controller
             ->orderBy('created_at')
             ->get();
 
-        $loaiMap     = ['phep_nam' => 'Phép năm', 'om' => 'Nghỉ ốm', 'viec_rieng' => 'Việc riêng', 'khong_luong' => 'Không lương'];
+        $loaiMap     = ['phep_nam' => 'Phép năm', 'om' => 'Nghỉ ốm'];
         $ttMap       = [1 => 'Chờ duyệt', 2 => 'Đã duyệt', 3 => 'Từ chối'];
-        $luongMap    = ['co_luong' => 'Có lương', 'khong_luong' => 'Không lương', 'om' => 'BHXH (ốm)'];
 
-        $csv = "STT,Nhân viên,Email,Loại nghỉ,Từ ngày,Đến ngày,Số ngày,Lý do,Trạng thái,Loại tính lương,Người duyệt,Ngày duyệt\n";
+        $csv = "\xEF\xBB\xBF";
+        $csv .= "STT,Nhân viên,Email,Loại nghỉ,Từ ngày,Đến ngày,Số ngày,Có lương,Trừ lương,Lý do,Trạng thái,Người duyệt,Ngày duyệt\n";
 
         foreach ($data as $k => $v) {
             $csv .= implode(',', [
@@ -282,9 +277,10 @@ class DonNghiPhepController extends Controller
                 $v->ngay_bat_dau?->format('d/m/Y') ?? '',
                 $v->ngay_ket_thuc?->format('d/m/Y') ?? '',
                 $v->so_ngay,
+                $this->laySoNgayCoLuong($v),
+                $this->laySoNgayKhongLuong($v),
                 '"' . str_replace('"', '""', $v->ly_do ?? '') . '"',
                 $ttMap[$v->trang_thai] ?? '',
-                //$luongMap[$v->loai_tinh_luong] ?? '—',
                 '"' . ($v->nguoi_duyet?->ho_va_ten ?? '') . '"',
                 $v->ngay_duyet?->format('d/m/Y') ?? '',
             ]) . "\n";
@@ -296,5 +292,91 @@ class DonNghiPhepController extends Controller
             'Content-Type'        => 'text/csv; charset=UTF-8',
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",
         ]);
+    }
+
+    private function tinhSoNgayLamViec(string $ngayBatDau, string $ngayKetThuc): int
+    {
+        $start   = Carbon::parse($ngayBatDau);
+        $end     = Carbon::parse($ngayKetThuc);
+        $soNgay  = 0;
+        $current = $start->copy();
+
+        while ($current->lte($end)) {
+            if (!$current->isWeekend()) {
+                $soNgay++;
+            }
+            $current->addDay();
+        }
+
+        return $soNgay;
+    }
+
+    private function tinhHanMucConLai(int $idNhanVien, string $loaiNghi, int $nam, ?int $excludeId = null): array
+    {
+        if (!in_array($loaiNghi, self::LOAI_NGHI_HOP_LE, true)) {
+            return ['tong_han_muc' => 0, 'da_dung' => 0, 'con_lai' => 0];
+        }
+
+        if ($loaiNghi === 'om') {
+            $tongHanMuc = self::NGHI_OM_MOI_NAM;
+        } else {
+            $daDungNamTruoc = $this->tongNgayCoLuongDaDuyet($idNhanVien, 'phep_nam', $nam - 1);
+            $duNamTruoc = max(0, self::PHEP_NAM_MOI_NAM - $daDungNamTruoc);
+            $tongHanMuc = self::PHEP_NAM_MOI_NAM + min(self::PHEP_NAM_MOI_NAM, $duNamTruoc);
+        }
+
+        $daDung = $this->tongNgayCoLuongDaDuyet($idNhanVien, $loaiNghi, $nam, $excludeId);
+
+        return [
+            'tong_han_muc' => $tongHanMuc,
+            'da_dung'      => $daDung,
+            'con_lai'      => max(0, $tongHanMuc - $daDung),
+        ];
+    }
+
+    private function tinhNgayLuongChoDon(DonNghiPhep $don): array
+    {
+        $hanMuc = $this->tinhHanMucConLai(
+            $don->id_nhan_vien,
+            $don->loai_nghi,
+            $don->ngay_bat_dau->year,
+            $don->id
+        );
+
+        $coLuong = min($don->so_ngay, $hanMuc['con_lai']);
+
+        return [
+            'co_luong' => $coLuong,
+            'khong_luong' => max(0, $don->so_ngay - $coLuong),
+        ];
+    }
+
+    private function tongNgayCoLuongDaDuyet(int $idNhanVien, string $loaiNghi, int $nam, ?int $excludeId = null): int
+    {
+        return DonNghiPhep::where('id_nhan_vien', $idNhanVien)
+            ->where('loai_nghi', $loaiNghi)
+            ->where('trang_thai', 2)
+            ->whereYear('ngay_bat_dau', $nam)
+            ->when($excludeId, fn($q) => $q->where('id', '!=', $excludeId))
+            ->get()
+            ->sum(fn($don) => $this->laySoNgayCoLuong($don));
+    }
+
+    private function laySoNgayCoLuong(DonNghiPhep $don): int
+    {
+        if ($don->so_ngay_co_luong !== null) {
+            return (int) $don->so_ngay_co_luong;
+        }
+
+        return in_array($don->loai_nghi, self::LOAI_NGHI_HOP_LE, true) ? (int) $don->so_ngay : 0;
+    }
+
+    private function laySoNgayKhongLuong(DonNghiPhep $don): int
+    {
+        if ($don->so_ngay_khong_luong !== null) {
+            return (int) $don->so_ngay_khong_luong;
+        }
+
+        return in_array($don->loai_nghi, self::LOAI_NGHI_HOP_LE, true) ? 0 : (int) $don->so_ngay;
     }
 }

@@ -17,7 +17,7 @@ class ChamCongAdminController extends Controller
             : Carbon::today()->toDateString();
 
         $query = ChamCong::with('nhanVien:id,ho_va_ten,email,id_phong_ban')
-                          ->whereDate('ngay_lam_viec', $ngay);
+            ->whereDate('ngay_lam_viec', $ngay);
 
         if ($request->filled('ca_lam'))       $query->where('ca_lam', $request->ca_lam);
         if ($request->filled('trang_thai'))    $query->where('trang_thai', $request->trang_thai);
@@ -71,7 +71,7 @@ class ChamCongAdminController extends Controller
                     : null,
                 'trang_thai'    => $chamCong->trang_thai,
                 'ghi_chu_nv'   => $chamCong->ghi_chu_nhan_vien,
-                'ghi_chu_admin'=> $chamCong->ghi_chu_admin,
+                'ghi_chu_admin' => $chamCong->ghi_chu_admin,
             ],
         ]);
     }
@@ -137,11 +137,11 @@ class ChamCongAdminController extends Controller
         ]);
 
         $updated = ChamCong::whereIn('id', $validated['ids'])
-                            ->where('trang_thai', 1) // chỉ xác nhận những cái đã check-out
-                            ->update([
-                                'trang_thai'    => 2,
-                                'ghi_chu_admin' => 'Xác nhận hàng loạt',
-                            ]);
+            ->where('trang_thai', 1) // chỉ xác nhận những cái đã check-out
+            ->update([
+                'trang_thai'    => 2,
+                'ghi_chu_admin' => 'Xác nhận hàng loạt',
+            ]);
 
         return response()->json([
             'status'  => true,
@@ -172,5 +172,57 @@ class ChamCongAdminController extends Controller
             ->get();
 
         return response()->json(['status' => true, 'data' => $data]);
+    }
+
+    // ── DOWNLOAD ẢNH CHECK-IN ────────────────────────────────────────────────
+    // GET /api/admin/cham-cong/download-anh-checkin/{id}
+    public function downloadAnhCheckin($id)
+    {
+        $chamCong = ChamCong::findOrFail($id);
+
+        if (!$chamCong->anh_check_in) {
+            return response()->json(['message' => 'Chưa có ảnh check-in'], 404);
+        }
+
+        // Thử lấy từ storage disk public
+        if (\Storage::disk('public')->exists($chamCong->anh_check_in)) {
+            $filePath = \Storage::disk('public')->path($chamCong->anh_check_in);
+            return response()->file($filePath);
+        }
+
+        // Fallback: thử từ storage/app/public (nếu symlink chưa tạo)
+        $fallbackPath = storage_path('app/public/' . $chamCong->anh_check_in);
+        if (file_exists($fallbackPath)) {
+            return response()->file($fallbackPath);
+        }
+
+        \Log::error('Ảnh check-in không tồn tại: ' . $chamCong->anh_check_in);
+        return response()->json(['message' => 'Tệp ảnh không tồn tại'], 404);
+    }
+
+    // ── DOWNLOAD ẢNH CHECK-OUT ───────────────────────────────────────────────
+    // GET /api/admin/cham-cong/download-anh-checkout/{id}
+    public function downloadAnhCheckout($id)
+    {
+        $chamCong = ChamCong::findOrFail($id);
+
+        if (!$chamCong->anh_check_out) {
+            return response()->json(['message' => 'Chưa có ảnh check-out'], 404);
+        }
+
+        // Thử lấy từ storage disk public
+        if (\Storage::disk('public')->exists($chamCong->anh_check_out)) {
+            $filePath = \Storage::disk('public')->path($chamCong->anh_check_out);
+            return response()->file($filePath);
+        }
+
+        // Fallback: thử từ storage/app/public (nếu symlink chưa tạo)
+        $fallbackPath = storage_path('app/public/' . $chamCong->anh_check_out);
+        if (file_exists($fallbackPath)) {
+            return response()->file($fallbackPath);
+        }
+
+        \Log::error('Ảnh check-out không tồn tại: ' . $chamCong->anh_check_out);
+        return response()->json(['message' => 'Tệp ảnh không tồn tại'], 404);
     }
 }

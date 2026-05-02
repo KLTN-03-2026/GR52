@@ -13,15 +13,8 @@ class NhanVienRoleSeeder extends Seeder
      */
     public function run(): void
     {
-        // Admin users (id 1, 2)
-        NhanVien::whereIn('id', [1, 2])->update(['role' => 'admin']);
+        NhanVien::query()->update(['role' => 'staff']);
 
-        // HR users (id 3, 4) - nếu có
-        NhanVien::whereIn('id', [3, 4])->update(['role' => 'hr']);
-
-        // Set remaining users as staff
-        NhanVien::whereNotIn('id', [1, 2, 3, 4])->update(['role' => 'staff']);
-
-        $this->command->info('Roles assigned successfully!');
+        $this->command->info('Đã bỏ role cố định. Quyền ADMIN/HR được lấy từ bảng phan_quyens.');
     }
 }

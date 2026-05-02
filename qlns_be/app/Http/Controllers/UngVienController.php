@@ -6,6 +6,7 @@ use App\Models\UngVien;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class UngVienController extends Controller
 {
@@ -51,7 +52,7 @@ class UngVienController extends Controller
         ], 201);
     }
 
-    public function dangnhap(Request $request)
+    public function dangNhap(Request $request)
     {
         $request->validate([
             'email'    => 'required|email',
@@ -67,21 +68,34 @@ class UngVienController extends Controller
             ], 401);
         }
 
+        // Xóa token cũ
+        $ungVien->tokens()->delete();
+
+        $token = $ungVien->createToken('token_ung_vien')->plainTextToken;
+
         return response()->json([
             'status'  => true,
             'message' => 'Đăng nhập thành công',
-            'token'   => $ungVien->createToken('token_ung_vien')->plainTextToken,
+            'token'   => $token,
             'user'    => $ungVien,
         ]);
     }
 
     public function checkLogin()
     {
-        $user = Auth::user();
+        $user = Auth::guard('sanctum')->user();
+
         if ($user && $user instanceof \App\Models\UngVien) {
-            return response()->json(['status' => true]);
+            return response()->json([
+                'status' => true,
+                'user'   => $user
+            ]);
         }
-        return response()->json(['status' => false, 'message' => 'Bạn cần đăng nhập vào hệ thống trước!']);
+
+        return response()->json([
+            'status' => false,
+            'message' => 'Unauthorized'
+        ], 401);
     }
 
     public function show(UngVien $ungVien)
@@ -105,5 +119,37 @@ class UngVienController extends Controller
     {
         $ungVien->delete();
         return response()->json(['message' => 'Đã xóa ứng viên']);
+    }
+
+    public function nopCv(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user || !($user instanceof UngVien)) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Bạn cần đăng nhập để thực hiện chức năng này'
+            ], 401);
+        }
+
+        $request->validate([
+            'file_cv' => 'required|file|mimes:pdf,doc,docx|max:5120', // Giới hạn 5MB
+        ]);
+
+        if ($request->hasFile('file_cv')) {
+            // Xóa file CV cũ nếu đã tồn tại để tiết kiệm bộ nhớ
+            if ($user->file_cv) {
+                Storage::disk('public')->delete($user->file_cv);
+            }
+
+            $path = $request->file('file_cv')->store('cvs', 'public');
+            $user->update(['file_cv' => $path]);
+
+            return response()->json([
+                'status'  => true,
+                'message' => 'Tải lên CV thành công',
+                'data'    => $user
+            ]);
+        }
     }
 }

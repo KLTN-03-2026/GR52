@@ -33,4 +33,14 @@ class ViTriTuyenDung extends Model
     {
         return $this->belongsTo(ChucVu::class, 'id_chuc_vu');
     }
+
+    public function hoSoUngTuyens()
+    {
+        return $this->hasMany(HoSoUngTuyen::class, 'vi_tri_tuyen_dung_id');
+    }
+
+    public function goiYUngViens()
+    {
+        return $this->hasMany(GoiYViecLamUngVien::class, 'vi_tri_tuyen_dung_id');
+    }
 }

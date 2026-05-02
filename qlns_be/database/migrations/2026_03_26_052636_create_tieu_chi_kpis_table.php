@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('tieu_chi_kpis', function (Blueprint $table) {
             $table->id();
-            $table->string('ten_tieu_chi', 255)->nullable();
-            $table->string('mo_ta', 255)->nullable();
-            $table->double('diem')->nullable();
-            $table->string('tinh_trang', 50)->nullable();
+            $table->string('ten_tieu_chi', 200);
+            $table->text('mo_ta')->nullable();
+            $table->decimal('trong_so', 5, 2)->default(100)->comment('% trọng số, tổng = 100');
+            $table->decimal('muc_tieu', 10, 2)->comment('Giá trị mục tiêu cần đạt');
+            $table->string('don_vi', 50)->nullable()->comment('%, số lượng, giờ...');
+            $table->tinyInteger('tinh_trang')->default(1);
             $table->timestamps();
         });
     }

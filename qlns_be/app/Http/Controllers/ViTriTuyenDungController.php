@@ -36,6 +36,21 @@ class ViTriTuyenDungController extends Controller
         return response()->json($viTriTuyenDung->load(['phongBan', 'chucVu']));
     }
 
+    /**
+     * Show job detail for public/candidates (Hiển thị chi tiết công việc cho ứng viên)
+     */
+    public function showPublic(ViTriTuyenDung $viTriTuyenDung)
+    {
+        if ($viTriTuyenDung->tinh_trang != 1) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Vị trí tuyển dụng này không khả dụng'
+            ], 404);
+        }
+
+        return response()->json($viTriTuyenDung->load(['phongBan', 'chucVu']));
+    }
+
     public function getData(Request $request)
     {
         $query = ViTriTuyenDung::with(['phongBan', 'chucVu']);
@@ -63,6 +78,14 @@ class ViTriTuyenDungController extends Controller
 
         if ($request->filled('search')) {
             $query->where('tieu_de', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('id_chuc_vu')) {
+            $query->where('id_chuc_vu', $request->id_chuc_vu);
+        }
+
+        if ($request->filled('id_phong_ban')) {
+            $query->where('id_phong_ban', $request->id_phong_ban);
         }
 
         if ($request->filled('per_page')) {

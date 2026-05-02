@@ -33,8 +33,8 @@ class DatabaseSeeder extends Seeder
             KpiNhanVienSeeder::class,
             QuyDinhChoDiemSeeder::class,
             ThuongVaPhatSeeder::class,
-            
             PhanQuyenSeeder::class,
+            LuongSeeder::class,
         ]);
     }
 }

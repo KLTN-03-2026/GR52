@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ExcelNhanVienExport;
+use App\Support\Rbac;
 
 class NhanVienController extends Controller
 {
@@ -18,7 +19,7 @@ class NhanVienController extends Controller
             'password' => 'required|string',
         ]);
 
-        $nhanVien = \App\Models\NhanVien::with(['chucVu'])->where('email', $request->email)->first();
+        $nhanVien = \App\Models\NhanVien::with(['chucVu', 'phongBan'])->where('email', $request->email)->first();
 
         if (!$nhanVien || !Hash::check($request->password, $nhanVien->password)) {
             return response()->json([
@@ -34,7 +35,7 @@ class NhanVienController extends Controller
             'status' => true,
             'token' => $token,
             'user' => $nhanVien,
-            'role' => $nhanVien->role, // Trả về role để frontend xác định layout
+            'role' => Rbac::role($nhanVien),
         ]);
     }
 
@@ -106,7 +107,12 @@ class NhanVienController extends Controller
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
-        return response()->json(NhanVien::create($validated), 201);
+        $nhanVien = NhanVien::create($validated);
+        return response()->json([
+            'status' => true,
+            'message' => 'Tạo nhân viên thành công',
+            'data' => $nhanVien
+        ], 201);
     }
 
 
@@ -166,10 +172,12 @@ class NhanVienController extends Controller
     {
         $user_login   = Auth::guard('sanctum')->user();
         if ($user_login && $user_login instanceof \App\Models\NhanVien) {
+            // Return user with relations so frontend can display names
+            $fullUser = $user_login->load(['phongBan', 'chucVu']);
             return response()->json([
                 'status'    =>  true,
-                'user'      =>  $user_login,
-                'role'      =>  $user_login->role
+                'user'      =>  $fullUser,
+                'role'      =>  Rbac::role($user_login),
             ]);
         } else {
             return response()->json([
@@ -179,16 +187,41 @@ class NhanVienController extends Controller
         }
     }
 
+    public function getUserInfo(Request $request)
+    {
+        try {
+            $user = Auth::guard('sanctum')->user();
+
+            if ($user && $user instanceof \App\Models\NhanVien) {
+                $fullUser = $user->load(['phongBan', 'chucVu']);
+                return response()->json([
+                    'status' => true,
+                    'data' => $fullUser,
+                ]);
+            } else {
+                return response()->json([
+                    'status'    =>  false,
+                    'message'   =>  'Bạn cần đăng nhập vào hệ thống trước!'
+                ], 401);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'    =>  false,
+                'message'   =>  'Lỗi: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function changeStatus(Request $request)
     {
         $validated = $request->validate([
-            'id' => 'required|exists:phong_bans,id',
+            'id' => 'required|exists:nhan_viens,id',
             'tinh_trang' => 'required|in:0,1',
         ]);
 
-        $phongBan = NhanVien::findOrFail($validated['id']);
-        $phongBan->update(['tinh_trang' => $validated['tinh_trang']]);
-        return response()->json($phongBan);
+        $nhanVien = NhanVien::findOrFail($validated['id']);
+        $nhanVien->update(['tinh_trang' => $validated['tinh_trang']]);
+        return response()->json($nhanVien);
     }
 
     public function logout(Request $request)
@@ -196,7 +229,6 @@ class NhanVienController extends Controller
         $user = $request->user('sanctum');
 
         if ($user) {
-            // Delete current token
             $token = $user->currentAccessToken();
             if ($token) {
                 $token->delete();

@@ -22,5 +22,13 @@ class UngVien extends Authenticatable
         'ghi_chu',
     ];
 
+    public function hoSoUngTuyens()
+    {
+        return $this->hasMany(HoSoUngTuyen::class, 'ung_vien_id');
+    }
 
+    public function goiYViecLams()
+    {
+        return $this->hasMany(GoiYViecLamUngVien::class, 'ung_vien_id');
+    }
 }

@@ -2,25 +2,45 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class HoSoUngTuyen extends Model
 {
-   protected $table = 'ho_so_ung_tuyens';
+    use HasFactory;
+
+    protected $table = 'ho_so_ung_tuyens';
 
     protected $fillable = [
-        'id_ung_vien',
-        'id_chuc_vu',
+        'ung_vien_id',
+        'vi_tri_tuyen_dung_id',
+        'file_cv',
+        'ghi_chu_ung_vien',
         'ngay_ung_tuyen',
         'trang_thai',
-        'trang_thai_cu',
-        'ngay_cap_nhat',
-        'ghi_chu',
     ];
 
     protected $casts = [
         'ngay_ung_tuyen' => 'datetime',
-        'ngay_cap_nhat'  => 'datetime',
-        'trang_thai'     => 'integer',
     ];
+
+    public function ungVien()
+    {
+        return $this->belongsTo(UngVien::class, 'ung_vien_id');
+    }
+
+    public function viTriTuyenDung()
+    {
+        return $this->belongsTo(ViTriTuyenDung::class, 'vi_tri_tuyen_dung_id');
+    }
+
+    public function danhGiaCVs()
+    {
+        return $this->hasMany(DanhGiaCVUngTuyen::class, 'ho_so_ung_tuyen_id');
+    }
+
+    public function latestDanhGiaCV()
+    {
+        return $this->hasOne(DanhGiaCVUngTuyen::class, 'ho_so_ung_tuyen_id')->latestOfMany();
+    }
 }

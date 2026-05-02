@@ -13,4 +13,9 @@ class PhanQuyen extends Model
         'ten_chuc_nang',
     ];
 
+    public function nhanVien()
+    {
+        return $this->belongsTo(NhanVien::class, 'id_nhanvien');
+    }
+
 }

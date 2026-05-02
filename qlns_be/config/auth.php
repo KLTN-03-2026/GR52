@@ -45,7 +45,7 @@ return [
             'provider'  => 'nhanvien',
         ],
         'ung_vien' => [
-            'driver'    => 'session',
+            'driver'    => 'sanctum',
             'provider'  => 'tai_khoan_ung_viens',
         ],
 

@@ -13,17 +13,13 @@ return new class extends Migration
     {
         Schema::create('ho_so_ung_tuyens', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_ung_vien');
-            $table->unsignedBigInteger('id_chuc_vu')->nullable();
-            $table->dateTime('ngay_ung_tuyen');
-            $table->tinyInteger('trang_thai')->default(1);
-            $table->string('trang_thai_cu', 50)->nullable()
-                  ->comment('Trạng thái trước (đã gộp từ lich_su_trang_thais)');
-            $table->dateTime('ngay_cap_nhat')->nullable();
-            $table->string('ghi_chu', 500)->nullable();
+            $table->foreignId('ung_vien_id')->constrained('ung_viens')->onDelete('cascade');
+            $table->foreignId('vi_tri_tuyen_dung_id')->constrained('vi_tri_tuyen_dungs')->onDelete('cascade');
+            $table->string('file_cv')->nullable(); // Path to the CV file for this specific application
+            $table->text('ghi_chu_ung_vien')->nullable(); // Candidate's cover letter/notes
+            $table->timestamp('ngay_ung_tuyen')->useCurrent();
+            $table->integer('trang_thai')->default(0); // 0: Đang chờ, 1: Đã xem, 2: Đã duyệt, 3: Từ chối
             $table->timestamps();
-
-            
         });
     }
 
