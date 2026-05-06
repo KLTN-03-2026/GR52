@@ -17,6 +17,7 @@ use App\Http\Controllers\ChamCongNhanVienController;
 use App\Http\Controllers\LuongController;
 use App\Http\Controllers\HoSoUngTuyenController;
 use App\Http\Controllers\LoaiHopDongController;
+use App\Http\Controllers\ChiTietHopDongController;
 use App\Http\Controllers\Api\JobSuggestionController;
 use App\Models\KpiNhanVien;
 
@@ -29,6 +30,9 @@ Route::get('/admin/nhan-vien/data', [NhanVienController::class, 'getData'])->mid
 Route::get('/admin/check-login', [NhanVienController::class, 'checkLogin']);
 Route::get('/admin/logout', [NhanVienController::class, 'logout'])->middleware("NhanVienMiddle");
 Route::get('/admin/user-info', [NhanVienController::class, 'getUserInfo'])->middleware("auth:sanctum");
+Route::post('/nhan-vien/update-profile', [NhanVienController::class, 'updateProfile'])->middleware("auth:sanctum");
+Route::post('/nhan-vien/change-password', [NhanVienController::class, 'changePassword'])->middleware("auth:sanctum");
+Route::get('/nhan-vien/hop-dong/xem', [NhanVienController::class, 'myContracts'])->middleware("auth:sanctum");
 
 //nhân viên
 Route::post('/admin/nhan-vien/tim-kiem', [NhanVienController::class, 'timKiemNhanVien'])->middleware("NhanVienMiddle");
@@ -72,6 +76,15 @@ Route::get('/vi-tri/{viTriTuyenDung}', [ViTriTuyenDungController::class, 'showPu
 
 // Loại hợp đồng (contracts) - admin
 Route::get('/admin/loai-hop-dong/data', [LoaiHopDongController::class, 'index'])->middleware("NhanVienMiddle");
+Route::get('/admin/chi-tiet-hop-dong/data', [ChiTietHopDongController::class, 'index'])->middleware("NhanVienMiddle");
+Route::post('/admin/chi-tiet-hop-dong/create', [ChiTietHopDongController::class, 'store'])->middleware("NhanVienMiddle");
+Route::get('/admin/chi-tiet-hop-dong/{chiTietHopDong}', [ChiTietHopDongController::class, 'show'])->middleware("NhanVienMiddle");
+Route::post('/admin/chi-tiet-hop-dong/{chiTietHopDong}/update', [ChiTietHopDongController::class, 'update'])->middleware("NhanVienMiddle");
+Route::post('/admin/chi-tiet-hop-dong/{chiTietHopDong}/ky', [ChiTietHopDongController::class, 'adminSign'])->middleware("NhanVienMiddle");
+Route::get('/admin/chi-tiet-hop-dong/{chiTietHopDong}/pdf', [ChiTietHopDongController::class, 'exportPdf'])->middleware("NhanVienMiddle");
+Route::post('/admin/chi-tiet-hop-dong/{chiTietHopDong}/delete', [ChiTietHopDongController::class, 'destroy'])->middleware("NhanVienMiddle");
+Route::post('/nhan-vien/hop-dong/{chiTietHopDong}/ky', [ChiTietHopDongController::class, 'nhanVienSign'])->middleware("auth:sanctum");
+Route::get('/nhan-vien/hop-dong/{chiTietHopDong}/pdf', [ChiTietHopDongController::class, 'exportPdf'])->middleware("auth:sanctum");
 
 //đăng nhập ứng viên
 Route::post('/ung-vien/dang-nhap', [UngVienController::class, 'dangNhap']);
@@ -87,6 +100,7 @@ Route::get('/admin/ung-tuyen/all', [HoSoUngTuyenController::class, 'getAllApplic
 Route::get('/admin/ung-tuyen/{hoSoUngTuyen}/download-cv', [HoSoUngTuyenController::class, 'downloadCv'])->middleware("NhanVienMiddle");
 Route::get('/admin/ung-tuyen/{hoSoUngTuyen}/preview-cv', [HoSoUngTuyenController::class, 'previewCv'])->middleware("NhanVienMiddle");
 Route::post('/admin/ung-tuyen/{hoSoUngTuyen}/update-status', [HoSoUngTuyenController::class, 'updateTrangThai'])->middleware("NhanVienMiddle");
+Route::post('/admin/ung-tuyen/{hoSoUngTuyen}/send-result-email', [HoSoUngTuyenController::class, 'sendKetQuaEmail'])->middleware("NhanVienMiddle");
 Route::get('/ung-vien/show/{ungVien}', [UngVienController::class, 'show'])->middleware("auth:ung_vien");
 Route::post('/ung-vien/dang-xuat', [UngVienController::class, 'dangXuat']);
 Route::post('/ung-vien/update', [UngVienController::class, 'update'])->middleware("auth:ung_vien");

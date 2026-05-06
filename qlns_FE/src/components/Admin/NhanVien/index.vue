@@ -24,13 +24,8 @@
                         <button v-on:click="TimKiemBE()" class="btn btn-outline-secondary" type="button"
                             id="search-button">Tìm
                             Kiếm</button>
-<<<<<<< HEAD
 
 
-=======
-                          
-                            
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                     </div>
 
                     <div class="row g-3">
@@ -55,16 +50,13 @@
                                             <button class="btn btn-warning me-2" data-bs-toggle="modal"
                                                 data-bs-target="#phanQuyenModal" v-on:click="loadChucNang(v)">Phân
                                                 Quyền</button>
-                                            <button class="btn btn-info me-2" data-bs-toggle="modal"
-                                                data-bs-target="#hopDongModal"
-                                                v-on:click="Object.assign(create_hop_dong, v)">Tạo Hợp Đồng</button>
-<<<<<<< HEAD
-                                            <!-- <button class="btn btn-primary me-2 width-1"  @click="changeStatus(v)"
-                                                :class="v.tinh_trang == 1 ? 'btn btn-success w-100' : 'btn btn-danger w-100'">
-                                                {{ v.tinh_trang == 1 ? 'Hiển Thị' : 'Tạm Tắt' }}
+                                            <button class="btn btn-outline-info me-2" @click="gotoHopDong(v)">Hợp
+                                                Đồng</button>
+                                            <!-- <button class="btn me-2 width-1"
+                                                :class="v.tinh_trang == 1 ? 'btn btn-success w-100' : 'btn btn-danger w-100'"
+                                                @click="changeNhanVienStatus(v, v.tinh_trang == 1 ? 0 : 1)">
+                                                {{ v.tinh_trang == 1 ? 'Đang làm' : 'Ngừng làm' }}
                                             </button> -->
-=======
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                                             <button class="btn btn-primary me-2" data-bs-toggle="modal"
                                                 data-bs-target="#capnhatDM"
                                                 v-on:click="Object.assign(edit_nhan_vien, v)">Cập nhật</button>
@@ -188,11 +180,7 @@
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-<<<<<<< HEAD
                         <h1 class="modal-title fs-5" id="exampleModalLabel">Phân Quyền Đăng Nhập Cho Nhân Viên: {{
-=======
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Phân Quyền Cho Nhân Viên {{
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                             phan_quyen_nhan_vien.ho_va_ten }}</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -201,11 +189,7 @@
                             <thead>
                                 <tr>
                                     <th class='align-middle text-center'>#</th>
-<<<<<<< HEAD
                                     <th class='align-middle text-center'>Quyền</th>
-=======
-                                    <th class='align-middle text-center'>Tên Chức Năng</th>
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                                     <th class='align-middle text-center'>Trạng Thái</th>
                                 </tr>
                             </thead>
@@ -220,16 +204,9 @@
                                         </td>
                                         <td class="text-center align-middle">
                                             <button v-if="v.is_phan_quyen == 1" v-on:click="removeQuyen(v)"
-<<<<<<< HEAD
                                                 class="btn btn-primary">Đang dùng</button>
                                             <button v-else v-on:click="setQuyen(v)" class="btn btn-outline-primary">Cấp
                                                 quyền này</button>
-=======
-                                                class="btn btn-primary">Đã Phân
-                                                Quyền</button>
-                                            <button v-else v-on:click="setQuyen(v)" class="btn btn-danger">Chưa Phân
-                                                Quyền</button>
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                                         </td>
                                     </tr>
                                 </template>
@@ -312,25 +289,26 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row">
+                        <div class="row g-3">
                             <div class="col-lg-12">
-                                <label class="form-label fw-bold">Chọn Hợp Đồng</label>
-                                <select v-model="create_hop_dong.id_loai_hop_dong" v-on:change="loadNoiDung()"
+                                <label class="form-label fw-bold">Chọn loại hợp đồng</label>
+                                <select v-model="create_hop_dong.id_loai_hop_dong" @change="loadNoiDung()"
                                     class="form-control">
                                     <template v-for="(v, k) in list_hop_dong" :key="k">
-                                        <option v-bind:value="v.id">{{ v.ten_hop_dong }}</option>
+                                        <option :value="v.id">{{ v.ten_hop_dong }}</option>
                                     </template>
                                 </select>
                             </div>
-                        </div>
-                        <div class="row mt-2">
+
                             <div class="col-lg-12">
-                                <!-- <textarea v-model="create_hop_dong.noi_dung" class="form-control" cols="30"
-                                    rows="10"></textarea> -->
-                                <ckeditor v-model="create_hop_dong.noi_dung" :editor="editor" :config="editorConfig" />
+                                <label class="form-label fw-bold">Họ và tên nhân viên</label>
+                                <input type="text" class="form-control" :value="create_hop_dong.ho_va_ten" readonly>
                             </div>
-                        </div>
-                        <div class="row mt-2">
+
+                            <div class="col-lg-4">
+                                <label class="form-label fw-bold">Ngày Ký</label>
+                                <input v-model="create_hop_dong.ngay_ky" type="date" class="form-control">
+                            </div>
                             <div class="col-lg-4">
                                 <label class="form-label fw-bold">Ngày Bắt Đầu</label>
                                 <input v-model="create_hop_dong.ngay_bat_dau" type="date" class="form-control">
@@ -339,9 +317,12 @@
                                 <label class="form-label fw-bold">Ngày Kết Thúc</label>
                                 <input v-model="create_hop_dong.ngay_ket_thuc" type="date" class="form-control">
                             </div>
-                            <div class="col-lg-4">
-                                <label class="form-label fw-bold">Ngày Ký</label>
-                                <input v-model="create_hop_dong.ngay_ky" type="date" class="form-control">
+
+                            <div class="col-lg-12">
+                                <label class="form-label fw-bold">Nội dung hợp đồng (mẫu tự động)</label>
+                                <div class="contract-preview border rounded p-3 bg-light"
+                                    v-html="create_hop_dong.noi_dung">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -350,6 +331,86 @@
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
                             v-on:click="taoHopDong()">Tạo Hợp
                             Đồng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="quanLyHopDongModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Quản Lý Hợp Đồng - {{ selected_employee.ho_va_ten || '' }}</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Mẫu</th>
+                                        <th>Ngày bắt đầu</th>
+                                        <th>Ngày kết thúc</th>
+                                        <th>Trạng thái</th>
+                                        <th>Chữ ký</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(hd, idx) in selected_employee_contracts" :key="hd.id">
+                                        <td>{{ idx + 1 }}</td>
+                                        <td>{{ hd.loai_hop_dong?.ten_hop_dong || '-' }}</td>
+                                        <td>{{ formatDate(hd.ngay_bat_dau) }}</td>
+                                        <td>{{ formatDate(hd.ngay_ket_thuc) }}</td>
+                                        <td><span class="badge bg-secondary">{{ contractStatusText(hd.trang_thai)
+                                                }}</span></td>
+                                        <td>
+                                            <div>Admin: {{ hd.chu_ky_admin || 'Chưa ký' }}</div>
+                                            <div>NV: {{ hd.chu_ky_nhan_vien || 'Chưa ký' }}</div>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary me-1"
+                                                @click="setEditContract(hd)">Sửa</button>
+                                            <button class="btn btn-sm btn-success me-1"
+                                                @click="adminSignContract(hd)">Ký/Gửi</button>
+                                            <button class="btn btn-sm btn-outline-danger"
+                                                @click="downloadContractPdf(hd)">PDF</button>
+                                        </td>
+                                    </tr>
+                                    <tr v-if="selected_employee_contracts.length === 0">
+                                        <td colspan="7" class="text-center">Chưa có hợp đồng.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div v-if="edit_contract.id" class="border rounded p-3 mt-3">
+                            <h6 class="fw-bold">Chỉnh sửa hợp đồng #{{ edit_contract.id }}</h6>
+                            <div class="row g-2 mb-2">
+                                <div class="col-md-4">
+                                    <label class="form-label">Ngày ký</label>
+                                    <input v-model="edit_contract.ngay_ky" type="date" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Ngày bắt đầu</label>
+                                    <input v-model="edit_contract.ngay_bat_dau" type="date" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Ngày kết thúc</label>
+                                    <input v-model="edit_contract.ngay_ket_thuc" type="date" class="form-control">
+                                </div>
+                            </div>
+                            <ckeditor v-model="edit_contract.noi_dung" :editor="editor" :config="editorConfig" />
+                            <div class="mt-3 text-end">
+                                <button class="btn btn-secondary me-2" @click="edit_contract = {}">Hủy</button>
+                                <button class="btn btn-primary" @click="updateContract">Lưu Hợp Đồng</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input v-model="admin_signature" class="form-control" style="max-width: 260px"
+                            placeholder="Chữ ký admin">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     </div>
                 </div>
             </div>
@@ -374,6 +435,10 @@ export default {
             delete_nhan_vien: {},
             phan_quyen_nhan_vien: {},
             create_hop_dong: {},
+            selected_employee: {},
+            selected_employee_contracts: [],
+            edit_contract: {},
+            admin_signature: '',
 
             list_nhan_vien: [],
             list_chuc_vu: [],
@@ -382,10 +447,7 @@ export default {
             list_chuc_nang: [],
 
             search: { noi_dung: '', id_chuc_vu: null, id_phong_ban: null },
-<<<<<<< HEAD
             status_loading: {},
-=======
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
 
             editor: ClassicEditor,
             editorConfig: {
@@ -572,26 +634,20 @@ export default {
                 })
                 .then((res) => {
                     if (res.data.status) {
-<<<<<<< HEAD
                         this.$toast.success(res.data.message || 'Cấp quyền thành công');
                         this.loadChucNang(this.phan_quyen_nhan_vien);
                     } else {
                         this.$toast.error(res.data.message || 'Cấp quyền thất bại');
-=======
-                        this.$toast.success('Cấp quyền thành công');
-                        this.loadChucNang(this.phan_quyen_nhan_vien);
-                    } else {
-                        this.$toast.error('Cấp quyền thất bại');
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                     }
                 })
                 .catch((err) => this.handleValidationError(err));
         },
 
-<<<<<<< HEAD
         // ─── ĐỔI TRẠNG THÁI NHÂN VIÊN ─────────────────────
-        changeNhanVienStatus(nhanVien, event) {
-            const newStatus = event.target.value;
+        changeNhanVienStatus(nhanVien, eventOrStatus) {
+            const newStatus = typeof eventOrStatus === 'object'
+                ? eventOrStatus.target.value
+                : eventOrStatus;
             this.status_loading[nhanVien.id] = true;
             axios
                 .post(`${API}/nhan-vien/change-status`, {
@@ -616,8 +672,6 @@ export default {
                 });
         },
 
-=======
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
         // ─── THU HỒI QUYỀN ─────────────────────────────────
         removeQuyen(value) {
             axios
@@ -629,17 +683,10 @@ export default {
                 })
                 .then((res) => {
                     if (res.data.status) {
-<<<<<<< HEAD
                         this.$toast.success(res.data.message || 'Thu hồi quyền thành công');
                         this.loadChucNang(this.phan_quyen_nhan_vien);
                     } else {
                         this.$toast.error(res.data.message || 'Thu hồi quyền thất bại');
-=======
-                        this.$toast.success('Thu hồi quyền thành công');
-                        this.loadChucNang(this.phan_quyen_nhan_vien);
-                    } else {
-                        this.$toast.error('Thu hồi quyền thất bại');
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                     }
                 })
                 .catch((err) => this.handleValidationError(err));
@@ -666,15 +713,40 @@ export default {
         },
 
 
-<<<<<<< HEAD
         //─── HỢP ĐỒNG: TỰ ĐIỀN NỘI DUNG KHI CHỌN LOẠI ─────────────────
+        openCreateContract(employee) {
+            this.selected_employee = employee;
+            this.create_hop_dong = {
+                id_nhan_vien: employee.id,
+                ho_va_ten: employee.ho_va_ten,
+                email: employee.email,
+                so_dien_thoai: employee.so_dien_thoai,
+                dia_chi: employee.dia_chi,
+                id_loai_hop_dong: this.list_hop_dong[0]?.id || null,
+                noi_dung: '',
+                ngay_bat_dau: '',
+                ngay_ket_thuc: '',
+                ngay_ky: new Date().toISOString().slice(0, 10),
+            };
+            this.loadNoiDung();
+        },
+
         loadNoiDung() {
             const found = this.list_hop_dong.find(
                 (v) => v.id == this.create_hop_dong.id_loai_hop_dong
             );
             if (found) {
-                this.create_hop_dong.noi_dung = found.noi_dung;
+                this.create_hop_dong.noi_dung = this.renderContractTemplate(found.noi_dung || '');
             }
+        },
+
+        renderContractTemplate(content) {
+            const employee = this.create_hop_dong;
+            return content
+                .replaceAll('{{ho_va_ten}}', employee.ho_va_ten || '')
+                .replaceAll('{{email}}', employee.email || '')
+                .replaceAll('{{so_dien_thoai}}', employee.so_dien_thoai || '')
+                .replaceAll('{{dia_chi}}', employee.dia_chi || '');
         },
 
         // ─── HỢP ĐỒNG: TẠO HỢP ĐỒNG ────────────────────────────────────
@@ -687,6 +759,7 @@ export default {
                     if (res.status === 200 || res.status === 201) {
                         this.$toast.success('Tạo hợp đồng thành công.');
                         this.create_hop_dong = {};
+                        if (this.selected_employee.id) this.loadEmployeeContracts(this.selected_employee);
                     } else {
                         this.$toast.error('Tạo hợp đồng thất bại.');
                     }
@@ -695,36 +768,115 @@ export default {
                     this.handleValidationError(err);
                 });
         },
-=======
-        // ─── HỢP ĐỒNG: TỰ ĐIỀN NỘI DUNG KHI CHỌN LOẠI ─────────────────
-        // loadNoiDung() {
-        //     const found = this.list_hop_dong.find(
-        //         (v) => v.id == this.create_hop_dong.id_loai_hop_dong
-        //     );
-        //     if (found) {
-        //         this.create_hop_dong.noi_dung = found.noi_dung;
-        //     }
-        // },
 
-        // // ─── HỢP ĐỒNG: TẠO HỢP ĐỒNG ────────────────────────────────────
-        // taoHopDong() {
-        //     axios
-        //         .post(`${API}/chi-tiet-hop-dong/create`, this.create_hop_dong, {
-        //             headers: this.authHeader(),
-        //         })
-        //         .then((res) => {
-        //             if (res.status === 200 || res.status === 201) {
-        //                 this.$toast.success('Tạo hợp đồng thành công.');
-        //                 this.create_hop_dong = {};
-        //             } else {
-        //                 this.$toast.error('Tạo hợp đồng thất bại.');
-        //             }
-        //         })
-        //         .catch((err) => {
-        //             this.handleValidationError(err);
-        //         });
-        // },
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
+        gotoHopDong(employee) {
+            this.$router.push({
+                path: '/admin/hop-dong',
+                query: {
+                    nhan_vien: employee.id,
+                },
+            });
+        },
+
+        loadEmployeeContracts(employee) {
+            this.selected_employee = employee;
+            this.selected_employee_contracts = [];
+            this.edit_contract = {};
+            this.admin_signature = localStorage.getItem('user_data')
+                ? JSON.parse(localStorage.getItem('user_data')).ho_va_ten || ''
+                : '';
+
+            axios
+                .get(`${API}/chi-tiet-hop-dong/data`, {
+                    params: { nhan_vien: employee.id },
+                    headers: this.authHeader(),
+                })
+                .then((res) => {
+                    this.selected_employee_contracts = res.data.status ? (res.data.data || []) : (res.data || []);
+                })
+                .catch(() => this.$toast.error('Không thể tải hợp đồng nhân viên.'));
+        },
+
+        setEditContract(contract) {
+            this.edit_contract = {
+                ...contract,
+                ngay_ky: this.toDateInput(contract.ngay_ky),
+                ngay_bat_dau: this.toDateInput(contract.ngay_bat_dau),
+                ngay_ket_thuc: this.toDateInput(contract.ngay_ket_thuc),
+            };
+        },
+
+        updateContract() {
+            axios
+                .post(`${API}/chi-tiet-hop-dong/${this.edit_contract.id}/update`, this.edit_contract, {
+                    headers: this.authHeader(),
+                })
+                .then((res) => {
+                    if (res.data.status) {
+                        this.$toast.success(res.data.message || 'Đã lưu hợp đồng.');
+                        this.edit_contract = {};
+                        this.loadEmployeeContracts(this.selected_employee);
+                    } else {
+                        this.$toast.error(res.data.message || 'Lưu hợp đồng thất bại.');
+                    }
+                })
+                .catch((err) => this.handleValidationError(err));
+        },
+
+        adminSignContract(contract) {
+            if (!this.admin_signature) {
+                this.$toast.error('Vui lòng nhập chữ ký admin.');
+                return;
+            }
+
+            axios
+                .post(`${API}/chi-tiet-hop-dong/${contract.id}/ky`, {
+                    chu_ky_admin: this.admin_signature,
+                }, {
+                    headers: this.authHeader(),
+                })
+                .then((res) => {
+                    if (res.data.status) {
+                        this.$toast.success(res.data.message || 'Đã ký và gửi hợp đồng.');
+                        this.loadEmployeeContracts(this.selected_employee);
+                    } else {
+                        this.$toast.error(res.data.message || 'Ký hợp đồng thất bại.');
+                    }
+                })
+                .catch((err) => this.handleValidationError(err));
+        },
+
+        downloadContractPdf(contract) {
+            axios
+                .get(`${API}/chi-tiet-hop-dong/${contract.id}/pdf`, {
+                    responseType: 'blob',
+                    headers: this.authHeader(),
+                })
+                .then((res) => {
+                    const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', `hop_dong_${contract.id}.pdf`);
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(() => this.$toast.error('Xuất PDF thất bại.'));
+        },
+
+        contractStatusText(status) {
+            return {
+                nhap: 'Bản nháp',
+                cho_nhan_vien_ky: 'Chờ nhân viên ký',
+                hoan_tat: 'Hoàn tất',
+            }[status] || 'Bản nháp';
+        },
+
+        toDateInput(value) {
+            if (!value) return '';
+            return String(value).split('T')[0];
+        },
 
         xuatExcel() {
             axios
@@ -795,6 +947,13 @@ export default {
             const year = date.getFullYear();
 
             return `${day}/${month}/${year}`;
+        },
+
+        formatDate(value) {
+            if (!value) return '-';
+            const date = new Date(value);
+            if (isNaN(date)) return value;
+            return date.toLocaleDateString('vi-VN');
         },
 
         displaySoDienThoai(v) {

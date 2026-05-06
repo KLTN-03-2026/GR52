@@ -43,12 +43,12 @@
                     </li>
 
                     <!-- Hồ Sơ Cá Nhân -->
-                    <!-- <li class="nav-item">
+                    <li class="nav-item">
                         <router-link to="/nhan-vien/ho-so" class="nav-link" :title="!isSidebarOpen ? 'Hồ Sơ' : ''">
                             <i class="fa-solid fa-user nav-icon"></i>
                             <span class="nav-label" v-show="isSidebarOpen">Hồ Sơ Cá Nhân</span>
                         </router-link>
-                    </li> -->
+                    </li>
                 </ul>
             </nav>
         </div>

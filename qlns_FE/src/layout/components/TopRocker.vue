@@ -4,7 +4,6 @@
         <nav class="navbar navbar-expand">
             <div class="topbar-logo-header">
                 <div class="">
-<<<<<<< HEAD
                     <img width="200%"
                         src="blob:https://gemini.google.com/079a84f5-9162-4aa4-b48e-4069a5d63aac"
                         class="logo-icon" alt="logo icon">
@@ -16,15 +15,6 @@
             <button class="mobile-toggle-menu" type="button" @click="$emit('toggle-sidebar')" aria-label="Mở menu">
                 <i class='bx bx-menu'></i>
             </button>
-=======
-                    <img width="200%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Zootopia_logo.svg/2560px-Zootopia_logo.svg.png" class="logo-icon" alt="logo icon">
-                </div>
-                <div class="">
-                  
-                </div>
-            </div>
-            <div class="mobile-toggle-menu"><i class='bx bx-menu'></i></div>
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
             <div class="search-bar flex-grow-1">
                 <div class="position-relative search-bar-box">
                     <input type="text" class="form-control search-control" placeholder="Tìm Kiếm?">
@@ -40,7 +30,6 @@
                         <a class="nav-link" href="#"> <i class='bx bx-search'></i>
                         </a>
                     </li>
-<<<<<<< HEAD
                     <li class="nav-item">
                         <button class="theme-toggle-btn" type="button" @click="toggleTheme"
                             :aria-label="isDarkMode ? 'Chuyển sang light mode' : 'Chuyển sang dark mode'"
@@ -48,8 +37,6 @@
                             <i :class="isDarkMode ? 'bx bx-sun' : 'bx bx-moon'"></i>
                         </button>
                     </li>
-=======
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                     <li class="nav-item dropdown dropdown-large">
                         <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false"> <i class='bx bx-category'></i>
@@ -95,12 +82,8 @@
                         </div>
                     </li>
                     <li class="nav-item dropdown dropdown-large">
-<<<<<<< HEAD
                         <a v-on:click="loadThongBao()"
                             class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#"
-=======
-                        <a v-on:click="loadThongBao()" class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#"
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                             role="button" data-bs-toggle="dropdown" aria-expanded="false"> <span
                                 class="alert-count">7</span>
                             <i class='bx bx-bell'></i>
@@ -113,7 +96,6 @@
                                 </div>
                             </a>
                             <div class="header-notifications-list">
-<<<<<<< HEAD
                                 <a v-for="(value, index) in list" :key="index" class="dropdown-item"
                                     href="javascript:;">
                                     <div class="d-flex align-items-center">
@@ -128,23 +110,6 @@
                                         </div>
                                     </div>
                                 </a>
-=======
-                                <template v-for="(value, index) in list" :key="index">
-                                    <a class="dropdown-item" href="javascript:;">
-                                        <div class="d-flex align-items-center">
-                                            <div :class="'notify bg-light-primary ' + value.color_thong_bao" style="width: 50px; height:  50px;"><i
-                                                    :class="value.icon_thong_bao"></i>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <h6 class="msg-name text-wrap">{{ value.tieu_de }}<span
-                                                        class="msg-time float-end">14 Sec
-                                                        ago</span></h6>
-                                                <p class="msg-info text-wrap">{{ value.noi_dung }}</p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </template>
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                             </div>
                             <a href="javascript:;">
                                 <div class="text-center msg-footer">View All Notifications</div>
@@ -319,17 +284,10 @@
             <div class="user-box dropdown">
                 <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"
                     role="button" data-bs-toggle="dropdown" aria-expanded="false">
-<<<<<<< HEAD
 
                     <div class="user-info ps-3">
                         <h6 class="user-name mb-0">{{ userInfo.ten_nhan_vien }}</h6>
                         <!-- <p class="designattion mb-0">{{ userInfo.vai_tro }}</p> -->
-=======
-                    
-                    <div class="user-info ps-3">
-                       
-                        <p class="designattion mb-0">Admin</p>
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                     </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -353,7 +311,6 @@
 </template>
 <script>
 import axios from 'axios';
-<<<<<<< HEAD
 import authService from '../../services/authService';
 export default {
     data() {
@@ -441,18 +398,6 @@ export default {
                     // Không đặt lại, giữ lại thông tin từ localStorage
                 });
         },
-=======
-export default {
-    data() {
-        return {
-            list: []
-        }
-    },
-    mounted() {
-        //this.loadThongBao();
-    },
-    methods: {
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
         loadThongBao() {
             axios
                 .post("http://127.0.0.1:8000/api/admin/thong-bao/data", {}, {
@@ -465,7 +410,6 @@ export default {
                 });
         },
         dangXuat() {
-<<<<<<< HEAD
             const candidateToken = localStorage.getItem("token_ung_vien");
 
             if (candidateToken) {
@@ -481,10 +425,6 @@ export default {
             // Đăng xuất nhân viên
             axios
                 .get("http://127.0.0.1:8000/api/admin/logout", {
-=======
-            axios
-                .get("http://127.0.0.1:8000/api/admin/dang-xuat", {
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
                     headers: {
                         Authorization: 'Bearer ' + localStorage.getItem("tk_nhan_vien")
                     }

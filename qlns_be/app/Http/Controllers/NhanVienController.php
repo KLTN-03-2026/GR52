@@ -193,10 +193,18 @@ class NhanVienController extends Controller
             $user = Auth::guard('sanctum')->user();
 
             if ($user && $user instanceof \App\Models\NhanVien) {
-                $fullUser = $user->load(['phongBan', 'chucVu']);
+                $fullUser = $user->load([
+                    'phongBan',
+                    'chucVu',
+                    'hopDongs' => function ($query) {
+                        $query->with('loaiHopDong')->orderByDesc('ngay_bat_dau')->orderByDesc('id');
+                    },
+                ]);
+
                 return response()->json([
                     'status' => true,
                     'data' => $fullUser,
+                    'user' => $fullUser,
                 ]);
             } else {
                 return response()->json([
@@ -210,6 +218,90 @@ class NhanVienController extends Controller
                 'message'   =>  'Lỗi: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::guard('sanctum')->user();
+
+        if (!$user || !$user instanceof \App\Models\NhanVien) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bạn cần đăng nhập vào hệ thống trước!'
+            ], 401);
+        }
+
+        $validated = $request->validate([
+            'ho_va_ten'     => 'required|string|max:100',
+            'ngay_sinh'     => 'nullable|date',
+            'dia_chi'       => 'nullable|string|max:255',
+            'so_dien_thoai' => 'nullable|string|max:15',
+        ]);
+
+        $user->update($validated);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Cập nhật thông tin cá nhân thành công.',
+            'data' => $user->fresh()->load(['phongBan', 'chucVu', 'hopDongs.loaiHopDong']),
+        ]);
+    }
+
+    public function changePassword(Request $request)
+    {
+        $user = Auth::guard('sanctum')->user();
+
+        if (!$user || !$user instanceof \App\Models\NhanVien) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bạn cần đăng nhập vào hệ thống trước!'
+            ], 401);
+        }
+
+        $validated = $request->validate([
+            'current_password' => 'required|string',
+            'password' => 'required|string|min:6|confirmed',
+        ], [
+            'password.confirmed' => 'Xác nhận mật khẩu mới không khớp.',
+        ]);
+
+        if (!Hash::check($validated['current_password'], $user->password)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Mật khẩu hiện tại không đúng.',
+            ], 422);
+        }
+
+        $user->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Đổi mật khẩu thành công.',
+        ]);
+    }
+
+    public function myContracts(Request $request)
+    {
+        $user = Auth::guard('sanctum')->user();
+
+        if (!$user || !$user instanceof \App\Models\NhanVien) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bạn cần đăng nhập vào hệ thống trước!'
+            ], 401);
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => $user->hopDongs()
+                ->with('loaiHopDong')
+                ->whereIn('trang_thai', ['cho_nhan_vien_ky', 'hoan_tat'])
+                ->orderByDesc('ngay_bat_dau')
+                ->orderByDesc('id')
+                ->get(),
+        ]);
     }
 
     public function changeStatus(Request $request)

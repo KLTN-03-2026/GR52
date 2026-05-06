@@ -6,6 +6,7 @@ use App\Models\HoSoUngTuyen;
 use App\Models\ViTriTuyenDung;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
@@ -180,6 +181,68 @@ class HoSoUngTuyenController extends Controller
             'status'  => true,
             'message' => 'Cập nhật trạng thái hồ sơ thành công.',
             'data'    => $hoSoUngTuyen
+        ]);
+    }
+
+    public function sendKetQuaEmail(Request $request, HoSoUngTuyen $hoSoUngTuyen)
+    {
+        if (!Auth::guard('sanctum')->check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $validated = $request->validate([
+            'ket_qua' => ['required', Rule::in(['dat', 'khong_dat'])],
+            'ngay_phong_van' => ['required_if:ket_qua,dat', 'nullable', 'date', 'after_or_equal:today'],
+            'ghi_chu' => ['nullable', 'string', 'max:1000'],
+        ], [
+            'ngay_phong_van.required_if' => 'Vui lòng chọn ngày phỏng vấn khi ứng viên đạt.',
+            'ngay_phong_van.after_or_equal' => 'Ngày phỏng vấn không được ở trong quá khứ.',
+        ]);
+
+        $hoSoUngTuyen->load(['ungVien', 'viTriTuyenDung']);
+
+        if (!$hoSoUngTuyen->ungVien || !$hoSoUngTuyen->ungVien->email) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Ứng viên chưa có email để gửi thông báo.',
+            ], 422);
+        }
+
+        $isPassed = $validated['ket_qua'] === 'dat';
+        $status = $isPassed ? 2 : 3;
+        $hoSoUngTuyen->update(['trang_thai' => $status]);
+
+        $candidateName = e($hoSoUngTuyen->ungVien->ho_ten);
+        $jobTitle = e(optional($hoSoUngTuyen->viTriTuyenDung)->tieu_de ?? 'vị trí đã ứng tuyển');
+        $note = !empty($validated['ghi_chu']) ? nl2br(e($validated['ghi_chu'])) : '';
+        $subject = $isPassed
+            ? "Thông báo đạt vòng CV - {$jobTitle}"
+            : "Thông báo kết quả hồ sơ ứng tuyển - {$jobTitle}";
+        $interviewDate = $isPassed
+            ? \Illuminate\Support\Carbon::parse($validated['ngay_phong_van'])->format('d/m/Y H:i')
+            : null;
+
+        $body = $isPassed
+            ? "<p>Xin chào <strong>{$candidateName}</strong>,</p>
+               <p>Cảm ơn bạn đã quan tâm và gửi hồ sơ ứng tuyển vị trí <strong>{$jobTitle}</strong>.</p>
+               <p>Sau khi xem xét CV, chúng tôi vui mừng thông báo bạn đã đạt vòng hồ sơ. Lịch phỏng vấn dự kiến: <strong>{$interviewDate}</strong>.</p>
+               <p>{$note}</p>
+               <p>Trân trọng,<br>Phòng Nhân sự</p>"
+            : "<p>Xin chào <strong>{$candidateName}</strong>,</p>
+               <p>Cảm ơn bạn đã quan tâm và gửi hồ sơ ứng tuyển vị trí <strong>{$jobTitle}</strong>.</p>
+               <p>Sau khi xem xét CV, rất tiếc hồ sơ của bạn chưa phù hợp với vị trí này ở thời điểm hiện tại.</p>
+               <p>{$note}</p>
+               <p>Chúc bạn nhiều thành công trong thời gian tới.<br>Phòng Nhân sự</p>";
+
+        Mail::html($body, function ($message) use ($hoSoUngTuyen, $subject) {
+            $message->to($hoSoUngTuyen->ungVien->email)
+                ->subject($subject);
+        });
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Đã gửi email thông báo kết quả cho ứng viên.',
+            'data' => $hoSoUngTuyen->fresh()->load(['ungVien', 'viTriTuyenDung']),
         ]);
     }
 }

@@ -1,6 +1,5 @@
 import axios from "axios";
 import { createToaster } from "@meforma/vue-toaster";
-<<<<<<< HEAD
 import authService from "../services/authService";
 
 const toaster = createToaster({ position: "top-right" });
@@ -25,19 +24,10 @@ export default function checkLogin(to, from, next) {
     .get("http://127.0.0.1:8000/api/admin/check-login", {
       headers: {
         Authorization: "Bearer " + token,
-=======
-const toaster = createToaster({ position: "top-right" });
-export default function (to, from, next) {
-  axios
-    .get("http://127.0.0.1:8000/api/admin/check-login", {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("tk_nhan_vien"),
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
       },
     })
     .then((res) => {
       if (res.data.status) {
-<<<<<<< HEAD
         // Lưu thông tin user và role
         localStorage.setItem("user_role", res.data.role);
         localStorage.setItem("user_data", JSON.stringify(res.data.user));
@@ -63,12 +53,5 @@ export default function (to, from, next) {
       localStorage.removeItem("user_data");
       next("/admin/dang-nhap");
       toaster.error("Lỗi kiểm tra đăng nhập");
-=======
-        next();
-      } else {
-        next("/admin/dang-nhap");
-        toaster.error(res.data.message);
-      }
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
     });
 }

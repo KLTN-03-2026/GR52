@@ -210,6 +210,20 @@
                                             placeholder="Nhập ghi chú về ứng viên này..."></textarea>
                                     </div>
                                 </div>
+
+                                <div class="card border-0 mt-3">
+                                    <div class="card-body">
+                                        <h6 class="text-muted mb-3">
+                                            <i class="fa-solid fa-envelope me-2"></i>Email Kết Quả
+                                        </h6>
+                                        <label class="form-label small fw-bold">Ngày phỏng vấn</label>
+                                        <input v-model="emailForm.ngay_phong_van" type="datetime-local"
+                                            class="form-control form-control-sm mb-2">
+                                        <label class="form-label small fw-bold">Ghi chú thêm</label>
+                                        <textarea v-model="emailForm.ghi_chu" class="form-control form-control-sm"
+                                            rows="3" placeholder="Nội dung bổ sung trong email..."></textarea>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Right: CV Preview -->
@@ -269,6 +283,16 @@
                     <!-- Footer -->
                     <div class="modal-footer border-top">
                         <button type="button" class="btn btn-secondary" @click="closeReviewModal">Đóng</button>
+                        <button type="button" class="btn btn-outline-danger" :disabled="sendingEmail"
+                            @click="sendResultEmail('khong_dat')">
+                            <span v-if="sendingEmail" class="spinner-border spinner-border-sm me-1"></span>
+                            <i v-else class="fa-solid fa-envelope me-1"></i>Gửi Mail Không Đậu
+                        </button>
+                        <button type="button" class="btn btn-outline-success" :disabled="sendingEmail"
+                            @click="sendResultEmail('dat')">
+                            <span v-if="sendingEmail" class="spinner-border spinner-border-sm me-1"></span>
+                            <i v-else class="fa-solid fa-envelope-circle-check me-1"></i>Gửi Mail Đậu
+                        </button>
                         <button v-if="selectedApp.trang_thai !== 3" type="button" class="btn btn-danger"
                             @click="confirmReject">
                             <i class="fa-solid fa-times me-1"></i>Từ Chối
@@ -304,6 +328,11 @@ export default {
             loading: false,
             selectedApp: null,
             evaluationNote: '',
+            emailForm: {
+                ngay_phong_van: '',
+                ghi_chu: '',
+            },
+            sendingEmail: false,
             cvPreviewUrl: '',
             analyzingIds: {},
             API: API,
@@ -402,6 +431,10 @@ export default {
         async openReviewModal(application) {
             this.selectedApp = application;
             this.evaluationNote = '';
+            this.emailForm = {
+                ngay_phong_van: '',
+                ghi_chu: '',
+            };
             await this.loadCvPreview(application);
         },
 
@@ -445,6 +478,48 @@ export default {
             this.releaseCvPreview();
             this.selectedApp = null;
             this.evaluationNote = '';
+            this.emailForm = {
+                ngay_phong_van: '',
+                ghi_chu: '',
+            };
+        },
+
+        async sendResultEmail(result) {
+            if (!this.selectedApp) return;
+            if (result === 'dat' && !this.emailForm.ngay_phong_van) {
+                toaster.error('Vui lòng chọn ngày phỏng vấn trước khi gửi mail đậu.');
+                return;
+            }
+
+            this.sendingEmail = true;
+            try {
+                const token = localStorage.getItem('tk_nhan_vien');
+                const response = await axios.post(
+                    `${API}/admin/ung-tuyen/${this.selectedApp.id}/send-result-email`,
+                    {
+                        ket_qua: result,
+                        ngay_phong_van: result === 'dat' ? this.emailForm.ngay_phong_van : null,
+                        ghi_chu: this.emailForm.ghi_chu || this.evaluationNote || '',
+                    },
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+
+                if (response.data.status) {
+                    const newStatus = result === 'dat' ? 2 : 3;
+                    toaster.success(response.data.message || 'Đã gửi email cho ứng viên.');
+                    this.selectedApp.trang_thai = newStatus;
+                    const idx = this.applications.findIndex(a => a.id === this.selectedApp.id);
+                    if (idx !== -1) this.applications[idx].trang_thai = newStatus;
+                    this.closeReviewModal();
+                } else {
+                    toaster.error(response.data.message || 'Gửi email thất bại.');
+                }
+            } catch (error) {
+                console.error('Error sending result email:', error);
+                toaster.error(error.response?.data?.message || 'Lỗi khi gửi email kết quả.');
+            } finally {
+                this.sendingEmail = false;
+            }
         },
 
         async downloadCv(application) {

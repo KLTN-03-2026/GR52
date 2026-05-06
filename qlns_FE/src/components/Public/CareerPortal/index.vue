@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
     <div class="career-portal" style="padding: 1.5rem; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh;">
         <!-- Header -->
         <div class="row mb-4">
@@ -367,13 +366,3 @@ export default {
     }
 }
 </style>
-=======
-
-</template>
-<script>
-export default {
-
-}
-</script>
-<style></style>
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe

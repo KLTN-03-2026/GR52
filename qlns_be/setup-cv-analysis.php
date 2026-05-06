@@ -54,8 +54,8 @@ if ($hasGroqUrl) echo "   - GROQ_BASE_URL: ✅ Configured\n";
 
 if (!$hasGroqKey || !$hasGroqUrl) {
     echo "   ⚠️  Add these to .env:\n";
-    if (!$hasGroqKey) echo "   GROQ_API_KEY=";
-    if (!$hasGroqUrl) echo "   GROQ_BASE_URL=";
+    if (!$hasGroqKey) echo "   GROQ_API_KEY=\n";
+    if (!$hasGroqUrl) echo "   GROQ_BASE_URL=\n";
 }
 echo "\n";
 

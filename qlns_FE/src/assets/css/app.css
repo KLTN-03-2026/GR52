@@ -5624,7 +5624,6 @@ input::placeholder {
 
 }
 
-<<<<<<< HEAD
 /* Sidebar layout */
 .page-wrapper {
 	transition: margin-left 0.25s cubic-bezier(.4, 0, .2, 1);
@@ -5642,35 +5641,10 @@ input::placeholder {
 	border-right: 0 !important;
 	box-shadow: none !important;
 	transition: width 0.25s cubic-bezier(.4, 0, .2, 1);
-=======
-/* --- Force overlay behavior: prevent layout shift when sidebar toggles --- */
-/* Ensure page content is not moved by legacy `.menu-open` rules. */
-.page-wrapper {
-	margin-left: 0 !important;
-}
-
-.menu-open .page-wrapper {
-	margin-left: 0 !important;
-}
-
-/* Make the sidebar wrapper fixed so it doesn't occupy document flow
-   (prevents the light vertical gap and overlapping content). */
-.sidebar-wrapper {
-	position: fixed;
-	top: 60px;
-	/* matches header height used elsewhere */
-	left: 0;
-	width: 280px;
-	height: calc(100vh - 60px);
-	z-index: 1050;
-	pointer-events: none;
-	/* allow clicks to pass through except inner sidebar */
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
 }
 
 .sidebar-wrapper .sidebar {
 	pointer-events: auto;
-<<<<<<< HEAD
 }
 
 @media (min-width: 992px) {
@@ -5692,14 +5666,3 @@ input::placeholder {
 		margin-left: 0 !important;
 	}
 }
-=======
-	/* enable interactions inside the actual sidebar */
-}
-
-/* When sidebar is collapsed keep only ~70px visible but still overlaying */
-@media (min-width: 992px) {
-	.sidebar-closed {
-		transform: translateX(-210px) !important;
-	}
-}
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe

@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 @import "./assets/css/design-system.css";
-=======
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -90,4 +88,3 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
->>>>>>> bd6a448a20c0da39ab6ee7709dfe60e1a3097dbe
